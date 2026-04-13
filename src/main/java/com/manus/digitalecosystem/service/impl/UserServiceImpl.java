@@ -64,4 +64,13 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.deleteById(id);
     }
+
+    @Override
+    public UserResponse updateUserStatus(String id, User.Status status) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("error.user.not_found", id));
+
+        user.setStatus(status);
+        return UserResponse.fromUser(userRepository.save(user));
+    }
 }

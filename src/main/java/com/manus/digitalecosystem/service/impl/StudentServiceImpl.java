@@ -1,5 +1,6 @@
 package com.manus.digitalecosystem.service.impl;
 
+import com.manus.digitalecosystem.dto.request.CreateStudentAccountRequest;
 import com.manus.digitalecosystem.dto.request.CreateStudentProfileRequest;
 import com.manus.digitalecosystem.dto.request.UpdateStudentProfileRequest;
 import com.manus.digitalecosystem.dto.response.PagedResponse;
@@ -8,12 +9,17 @@ import com.manus.digitalecosystem.exception.BadRequestException;
 import com.manus.digitalecosystem.exception.DuplicateResourceException;
 import com.manus.digitalecosystem.exception.ResourceNotFoundException;
 import com.manus.digitalecosystem.model.Department;
+import com.manus.digitalecosystem.model.NotificationType;
+import com.manus.digitalecosystem.model.Role;
 import com.manus.digitalecosystem.model.Student;
 import com.manus.digitalecosystem.model.University;
+import com.manus.digitalecosystem.model.User;
 import com.manus.digitalecosystem.model.VerificationStatus;
 import com.manus.digitalecosystem.repository.DepartmentRepository;
 import com.manus.digitalecosystem.repository.StudentRepository;
 import com.manus.digitalecosystem.repository.UniversityRepository;
+import com.manus.digitalecosystem.repository.UserRepository;
+import com.manus.digitalecosystem.service.NotificationService;
 import com.manus.digitalecosystem.service.StudentService;
 import com.manus.digitalecosystem.util.SecurityUtils;
 import org.springframework.data.domain.Page;
@@ -23,6 +29,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -36,17 +43,81 @@ public class StudentServiceImpl implements StudentService {
     private final UniversityRepository universityRepository;
     private final DepartmentRepository departmentRepository;
     private final MongoTemplate mongoTemplate;
+    private final NotificationService notificationService;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public StudentServiceImpl(
             StudentRepository studentRepository,
             UniversityRepository universityRepository,
             DepartmentRepository departmentRepository,
-            MongoTemplate mongoTemplate
+            MongoTemplate mongoTemplate,
+            NotificationService notificationService,
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder
     ) {
         this.studentRepository = studentRepository;
         this.universityRepository = universityRepository;
         this.departmentRepository = departmentRepository;
         this.mongoTemplate = mongoTemplate;
+        this.notificationService = notificationService;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    public StudentResponse createStudentAccount(CreateStudentAccountRequest request) {
+        String currentUserId = SecurityUtils.getCurrentUserId();
+        boolean isSuperAdmin = SecurityUtils.hasRole("SUPER_ADMIN");
+        boolean isUniversityAdmin = SecurityUtils.hasRole("UNIVERSITY_ADMIN");
+
+        if (!isSuperAdmin && !isUniversityAdmin) {
+            throw new AccessDeniedException("Forbidden");
+        }
+
+        String universityId;
+        if (isSuperAdmin) {
+            if (request.getUniversityId() == null || request.getUniversityId().isBlank()) {
+                throw new BadRequestException("error.student.university.required");
+            }
+            universityId = request.getUniversityId();
+        } else {
+            universityId = universityRepository.findByAdminUserId(currentUserId)
+                    .map(University::getId)
+                    .orElseThrow(() -> new ResourceNotFoundException("error.university.profile.not_found"));
+        }
+
+        Department department = departmentRepository.findById(request.getDepartmentId())
+                .orElseThrow(() -> new ResourceNotFoundException("error.department.not_found", request.getDepartmentId()));
+        if (!universityId.equals(department.getUniversityId())) {
+            throw new BadRequestException("error.department.university_mismatch");
+        }
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new DuplicateResourceException("error.user.email.exists", request.getEmail());
+        }
+
+        User user = User.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.STUDENT)
+                .status(User.Status.ACTIVE)
+                .build();
+
+        User savedUser = userRepository.save(user);
+
+        Student student = Student.builder()
+                .userId(savedUser.getId())
+                .email(savedUser.getEmail())
+                .fullName(request.getFullName())
+                .phone(request.getPhone())
+                .universityId(universityId)
+                .departmentId(department.getId())
+                .verificationStatus(VerificationStatus.PENDING)
+                .build();
+
+        Student savedStudent = studentRepository.save(student);
+        return StudentResponse.fromStudent(savedStudent);
     }
 
     @Override
@@ -172,7 +243,7 @@ public class StudentServiceImpl implements StudentService {
 
         Query query = new Query(criteria).with(pageable);
         List<Student> students = mongoTemplate.find(query, Student.class);
-        long total = mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Student.class);
+        long total = mongoTemplate.count(new Query(criteria), Student.class);
         Page<Student> page = new PageImpl<>(students, pageable, total);
 
         return PagedResponse.fromPage(page.map(StudentResponse::fromStudent));
@@ -235,6 +306,18 @@ public class StudentServiceImpl implements StudentService {
         }
 
         student.setVerificationStatus(verificationStatus);
-        return StudentResponse.fromStudent(studentRepository.save(student));
+        Student saved = studentRepository.save(student);
+
+        if (saved.getUserId() != null && !saved.getUserId().isBlank()) {
+            notificationService.createNotification(
+                    saved.getUserId(),
+                    NotificationType.STUDENT_VERIFICATION,
+                    "notification.student.verification.title",
+                    "notification.student.verification.body",
+                    List.of(verificationStatus.name())
+            );
+        }
+
+        return StudentResponse.fromStudent(saved);
     }
 }

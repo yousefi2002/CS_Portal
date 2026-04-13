@@ -1,9 +1,12 @@
 package com.manus.digitalecosystem.controller;
 
+import com.manus.digitalecosystem.dto.request.ForgotPasswordRequest;
 import com.manus.digitalecosystem.dto.request.LoginRequest;
+import com.manus.digitalecosystem.dto.request.ResetPasswordRequest;
 import com.manus.digitalecosystem.dto.response.JwtResponse;
 import com.manus.digitalecosystem.security.JwtUtils;
 import com.manus.digitalecosystem.security.UserDetailsImpl;
+import com.manus.digitalecosystem.service.PasswordResetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -30,6 +33,9 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
+    @Autowired
+    PasswordResetService passwordResetService;
+
     @PostMapping("/login")
     @Operation(summary = "Authenticate user and return JWT token")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -49,5 +55,19 @@ public class AuthController {
                 userDetails.getId(),
                 userDetails.getEmail(),
                 roles));
+    }
+
+    @PostMapping("/forgot-password")
+    @Operation(summary = "Request password reset (email-based)")
+    public ResponseEntity<Void> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        passwordResetService.requestPasswordReset(request.getEmail());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reset-password")
+    @Operation(summary = "Reset password using reset token")
+    public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        passwordResetService.resetPassword(request.getToken(), request.getNewPassword());
+        return ResponseEntity.ok().build();
     }
 }

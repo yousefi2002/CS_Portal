@@ -7,25 +7,41 @@ import com.manus.digitalecosystem.dto.response.PagedResponse;
 import com.manus.digitalecosystem.exception.ResourceNotFoundException;
 import com.manus.digitalecosystem.model.Company;
 import com.manus.digitalecosystem.model.Job;
+import com.manus.digitalecosystem.model.NotificationType;
+import com.manus.digitalecosystem.model.Student;
 import com.manus.digitalecosystem.model.VerificationStatus;
 import com.manus.digitalecosystem.repository.CompanyRepository;
 import com.manus.digitalecosystem.repository.JobRepository;
+import com.manus.digitalecosystem.repository.StudentRepository;
 import com.manus.digitalecosystem.service.JobService;
+import com.manus.digitalecosystem.service.NotificationService;
 import com.manus.digitalecosystem.util.SecurityUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Objects;
+
 @Service
 public class JobServiceImpl implements JobService {
 
     private final JobRepository jobRepository;
     private final CompanyRepository companyRepository;
+    private final StudentRepository studentRepository;
+    private final NotificationService notificationService;
 
-    public JobServiceImpl(JobRepository jobRepository, CompanyRepository companyRepository) {
+    public JobServiceImpl(
+            JobRepository jobRepository,
+            CompanyRepository companyRepository,
+            StudentRepository studentRepository,
+            NotificationService notificationService
+    ) {
         this.jobRepository = jobRepository;
         this.companyRepository = companyRepository;
+        this.studentRepository = studentRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -44,7 +60,9 @@ public class JobServiceImpl implements JobService {
                 .requiredSkills(request.getRequiredSkills())
                 .build();
 
-        return JobResponse.fromJob(jobRepository.save(job));
+        Job saved = jobRepository.save(job);
+        notifyStudents(saved);
+        return JobResponse.fromJob(saved);
     }
 
     @Override
@@ -115,5 +133,26 @@ public class JobServiceImpl implements JobService {
         return companyRepository.findByAdminUserId(currentUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("error.company.profile.not_found"));
     }
-}
 
+    private void notifyStudents(Job job) {
+        String message = "Job: " + job.getTitle();
+        List<String> studentUserIds = studentRepository.findByVerificationStatus(VerificationStatus.APPROVED).stream()
+                .map(Student::getUserId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+
+        for (String userId : studentUserIds) {
+            if (userId == null || userId.isBlank()) {
+                continue;
+            }
+            notificationService.createNotification(
+                    userId,
+                    NotificationType.OPPORTUNITY,
+                    "notification.opportunity.new.title",
+                    "notification.opportunity.new.body",
+                    List.of(message)
+            );
+        }
+    }
+}

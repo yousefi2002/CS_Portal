@@ -1,11 +1,13 @@
 package com.manus.digitalecosystem.controller;
 
 import com.manus.digitalecosystem.dto.request.CreateDepartmentRequest;
+import com.manus.digitalecosystem.dto.request.CreateDepartmentAdminAccountRequest;
 import com.manus.digitalecosystem.dto.request.UpdateDepartmentCurriculumRequest;
 import com.manus.digitalecosystem.dto.request.UpdateDepartmentRequest;
 import com.manus.digitalecosystem.dto.response.DepartmentCurriculumResponse;
 import com.manus.digitalecosystem.dto.response.DepartmentResponse;
 import com.manus.digitalecosystem.dto.response.PagedResponse;
+import com.manus.digitalecosystem.dto.response.UserResponse;
 import com.manus.digitalecosystem.service.DepartmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -93,5 +95,15 @@ public class DepartmentController {
     ) {
         return ResponseEntity.ok(departmentService.updateCurriculum(id, request));
     }
-}
 
+    @PostMapping("/{id}/admin-account")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','UNIVERSITY_ADMIN')")
+    @Operation(summary = "Create department admin account and assign to department (University Admin / Super Admin)")
+    public ResponseEntity<UserResponse> createDepartmentAdminAccount(
+            @PathVariable String id,
+            @Valid @RequestBody CreateDepartmentAdminAccountRequest request
+    ) {
+        UserResponse response = departmentService.createDepartmentAdminAccount(id, request);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+}

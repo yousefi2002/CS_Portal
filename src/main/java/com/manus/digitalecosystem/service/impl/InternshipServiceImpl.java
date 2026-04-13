@@ -7,25 +7,41 @@ import com.manus.digitalecosystem.dto.response.PagedResponse;
 import com.manus.digitalecosystem.exception.ResourceNotFoundException;
 import com.manus.digitalecosystem.model.Company;
 import com.manus.digitalecosystem.model.Internship;
+import com.manus.digitalecosystem.model.NotificationType;
+import com.manus.digitalecosystem.model.Student;
 import com.manus.digitalecosystem.model.VerificationStatus;
 import com.manus.digitalecosystem.repository.CompanyRepository;
 import com.manus.digitalecosystem.repository.InternshipRepository;
+import com.manus.digitalecosystem.repository.StudentRepository;
 import com.manus.digitalecosystem.service.InternshipService;
+import com.manus.digitalecosystem.service.NotificationService;
 import com.manus.digitalecosystem.util.SecurityUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Objects;
+
 @Service
 public class InternshipServiceImpl implements InternshipService {
 
     private final InternshipRepository internshipRepository;
     private final CompanyRepository companyRepository;
+    private final StudentRepository studentRepository;
+    private final NotificationService notificationService;
 
-    public InternshipServiceImpl(InternshipRepository internshipRepository, CompanyRepository companyRepository) {
+    public InternshipServiceImpl(
+            InternshipRepository internshipRepository,
+            CompanyRepository companyRepository,
+            StudentRepository studentRepository,
+            NotificationService notificationService
+    ) {
         this.internshipRepository = internshipRepository;
         this.companyRepository = companyRepository;
+        this.studentRepository = studentRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -45,7 +61,9 @@ public class InternshipServiceImpl implements InternshipService {
                 .requiredSkills(request.getRequiredSkills())
                 .build();
 
-        return InternshipResponse.fromInternship(internshipRepository.save(internship));
+        Internship saved = internshipRepository.save(internship);
+        notifyStudents(saved);
+        return InternshipResponse.fromInternship(saved);
     }
 
     @Override
@@ -117,5 +135,26 @@ public class InternshipServiceImpl implements InternshipService {
         return companyRepository.findByAdminUserId(currentUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("error.company.profile.not_found"));
     }
-}
 
+    private void notifyStudents(Internship internship) {
+        String message = "Internship: " + internship.getTitle();
+        List<String> studentUserIds = studentRepository.findByVerificationStatus(VerificationStatus.APPROVED).stream()
+                .map(Student::getUserId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+
+        for (String userId : studentUserIds) {
+            if (userId == null || userId.isBlank()) {
+                continue;
+            }
+            notificationService.createNotification(
+                    userId,
+                    NotificationType.OPPORTUNITY,
+                    "notification.opportunity.new.title",
+                    "notification.opportunity.new.body",
+                    List.of(message)
+            );
+        }
+    }
+}

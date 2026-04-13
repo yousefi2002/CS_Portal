@@ -1,6 +1,7 @@
 package com.manus.digitalecosystem.controller;
 
 import com.manus.digitalecosystem.dto.request.CreateUserRequest;
+import com.manus.digitalecosystem.dto.request.UpdateUserStatusRequest;
 import com.manus.digitalecosystem.dto.response.UserResponse;
 import com.manus.digitalecosystem.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,5 +59,13 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/status")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @Operation(summary = "Update user status (Super Admin only)")
+    public ResponseEntity<UserResponse> updateUserStatus(@PathVariable String id, @Valid @RequestBody UpdateUserStatusRequest request) {
+        UserResponse response = userService.updateUserStatus(id, request.getStatus());
+        return ResponseEntity.ok(response);
     }
 }

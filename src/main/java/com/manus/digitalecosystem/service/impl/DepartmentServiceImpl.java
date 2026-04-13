@@ -1,24 +1,31 @@
 package com.manus.digitalecosystem.service.impl;
 
 import com.manus.digitalecosystem.dto.request.CreateDepartmentRequest;
+import com.manus.digitalecosystem.dto.request.CreateDepartmentAdminAccountRequest;
 import com.manus.digitalecosystem.dto.request.UpdateDepartmentCurriculumRequest;
 import com.manus.digitalecosystem.dto.request.UpdateDepartmentRequest;
 import com.manus.digitalecosystem.dto.response.DepartmentCurriculumResponse;
 import com.manus.digitalecosystem.dto.response.DepartmentResponse;
 import com.manus.digitalecosystem.dto.response.PagedResponse;
+import com.manus.digitalecosystem.dto.response.UserResponse;
+import com.manus.digitalecosystem.exception.DuplicateResourceException;
 import com.manus.digitalecosystem.exception.ResourceNotFoundException;
 import com.manus.digitalecosystem.model.CurriculumCourse;
 import com.manus.digitalecosystem.model.CurriculumSemester;
 import com.manus.digitalecosystem.model.Department;
 import com.manus.digitalecosystem.model.DepartmentCurriculum;
+import com.manus.digitalecosystem.model.Role;
+import com.manus.digitalecosystem.model.User;
 import com.manus.digitalecosystem.model.University;
 import com.manus.digitalecosystem.repository.DepartmentRepository;
+import com.manus.digitalecosystem.repository.UserRepository;
 import com.manus.digitalecosystem.repository.UniversityRepository;
 import com.manus.digitalecosystem.service.DepartmentService;
 import com.manus.digitalecosystem.util.SecurityUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,10 +35,19 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     private final DepartmentRepository departmentRepository;
     private final UniversityRepository universityRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public DepartmentServiceImpl(DepartmentRepository departmentRepository, UniversityRepository universityRepository) {
+    public DepartmentServiceImpl(
+            DepartmentRepository departmentRepository,
+            UniversityRepository universityRepository,
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder
+    ) {
         this.departmentRepository = departmentRepository;
         this.universityRepository = universityRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -202,6 +218,45 @@ public class DepartmentServiceImpl implements DepartmentService {
         department.setCurriculum(curriculum);
         Department saved = departmentRepository.save(department);
         return DepartmentCurriculumResponse.fromCurriculum(saved.getCurriculum());
+    }
+
+    @Override
+    public UserResponse createDepartmentAdminAccount(String departmentId, CreateDepartmentAdminAccountRequest request) {
+        Department department = departmentRepository.findById(departmentId)
+                .orElseThrow(() -> new ResourceNotFoundException("error.department.not_found", departmentId));
+
+        if (department.getAdminUserId() != null && !department.getAdminUserId().isBlank()) {
+            throw new DuplicateResourceException("error.department.admin.exists");
+        }
+
+        if (!SecurityUtils.hasRole("SUPER_ADMIN")) {
+            if (!SecurityUtils.hasRole("UNIVERSITY_ADMIN")) {
+                throw new AccessDeniedException("Forbidden");
+            }
+            String myUniversityId = universityRepository.findByAdminUserId(SecurityUtils.getCurrentUserId())
+                    .map(University::getId)
+                    .orElseThrow(() -> new ResourceNotFoundException("error.university.profile.not_found"));
+            if (!myUniversityId.equals(department.getUniversityId())) {
+                throw new AccessDeniedException("Forbidden");
+            }
+        }
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new DuplicateResourceException("error.user.email.exists", request.getEmail());
+        }
+
+        User user = User.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.DEPARTMENT_ADMIN)
+                .status(User.Status.ACTIVE)
+                .build();
+
+        User savedUser = userRepository.save(user);
+        department.setAdminUserId(savedUser.getId());
+        departmentRepository.save(department);
+
+        return UserResponse.fromUser(savedUser);
     }
 
     private List<CurriculumCourse> mapCourses(List<UpdateDepartmentCurriculumRequest.Course> courses) {

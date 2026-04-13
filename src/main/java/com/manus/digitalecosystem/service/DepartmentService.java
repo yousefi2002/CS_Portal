@@ -1,11 +1,13 @@
 package com.manus.digitalecosystem.service;
 
 import com.manus.digitalecosystem.dto.request.CreateDepartmentRequest;
+import com.manus.digitalecosystem.dto.request.CreateDepartmentAdminAccountRequest;
 import com.manus.digitalecosystem.dto.request.UpdateDepartmentCurriculumRequest;
 import com.manus.digitalecosystem.dto.request.UpdateDepartmentRequest;
 import com.manus.digitalecosystem.dto.response.DepartmentCurriculumResponse;
 import com.manus.digitalecosystem.dto.response.DepartmentResponse;
 import com.manus.digitalecosystem.dto.response.PagedResponse;
+import com.manus.digitalecosystem.dto.response.UserResponse;
 import org.springframework.data.domain.Pageable;
 
 public interface DepartmentService {
@@ -24,5 +26,6 @@ public interface DepartmentService {
     DepartmentCurriculumResponse getCurriculum(String departmentId);
 
     DepartmentCurriculumResponse updateCurriculum(String departmentId, UpdateDepartmentCurriculumRequest request);
-}
 
+    UserResponse createDepartmentAdminAccount(String departmentId, CreateDepartmentAdminAccountRequest request);
+}

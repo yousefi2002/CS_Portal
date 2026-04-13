@@ -5,6 +5,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
@@ -68,14 +70,27 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ApiErrorResponse> handleAuthenticationException(AuthenticationException ex, HttpServletRequest request) {
         Locale locale = LocaleContextHolder.getLocale();
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        String messageKey = "error.auth.bad_credentials";
+        String fallback = "Invalid email or password";
+
+        if (ex instanceof DisabledException) {
+            status = HttpStatus.FORBIDDEN;
+            messageKey = "error.auth.user_disabled";
+            fallback = "Account is disabled";
+        } else if (!(ex instanceof BadCredentialsException)) {
+            messageKey = "error.auth.unauthorized";
+            fallback = "Unauthorized";
+        }
+
         ApiErrorResponse apiError = ApiErrorResponse.builder()
-                .message(localize("error.auth.bad_credentials", null, "Invalid email or password", locale))
-                .messageKey("error.auth.bad_credentials")
-                .httpStatus(HttpStatus.UNAUTHORIZED)
+                .message(localize(messageKey, null, fallback, locale))
+                .messageKey(messageKey)
+                .httpStatus(status)
                 .timestamp(nowUtc())
                 .path(request.getRequestURI())
                 .build();
-        return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(apiError, status);
     }
 
     @ExceptionHandler(AccessDeniedException.class)

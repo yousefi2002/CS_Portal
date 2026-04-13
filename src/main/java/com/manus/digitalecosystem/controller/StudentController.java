@@ -1,5 +1,6 @@
 package com.manus.digitalecosystem.controller;
 
+import com.manus.digitalecosystem.dto.request.CreateStudentAccountRequest;
 import com.manus.digitalecosystem.dto.request.CreateStudentProfileRequest;
 import com.manus.digitalecosystem.dto.request.UpdateStudentProfileRequest;
 import com.manus.digitalecosystem.dto.request.UpdateVerificationStatusRequest;
@@ -34,6 +35,14 @@ public class StudentController {
     @Operation(summary = "Create my student profile (Student)")
     public ResponseEntity<StudentResponse> createMyStudent(@Valid @RequestBody CreateStudentProfileRequest request) {
         StudentResponse response = studentService.createMyStudent(request);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PostMapping
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','UNIVERSITY_ADMIN')")
+    @Operation(summary = "Create a student account + profile (University Admin / Super Admin)")
+    public ResponseEntity<StudentResponse> createStudentAccount(@Valid @RequestBody CreateStudentAccountRequest request) {
+        StudentResponse response = studentService.createStudentAccount(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -80,4 +89,3 @@ public class StudentController {
         return ResponseEntity.ok(studentService.updateVerificationStatus(id, request.getVerificationStatus()));
     }
 }
-

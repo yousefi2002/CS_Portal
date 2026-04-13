@@ -1,5 +1,6 @@
 package com.manus.digitalecosystem.service;
 
+import com.manus.digitalecosystem.dto.request.CreateStudentAccountRequest;
 import com.manus.digitalecosystem.dto.request.CreateStudentProfileRequest;
 import com.manus.digitalecosystem.dto.request.UpdateStudentProfileRequest;
 import com.manus.digitalecosystem.dto.response.PagedResponse;
@@ -8,6 +9,8 @@ import com.manus.digitalecosystem.model.VerificationStatus;
 import org.springframework.data.domain.Pageable;
 
 public interface StudentService {
+    StudentResponse createStudentAccount(CreateStudentAccountRequest request);
+
     StudentResponse createMyStudent(CreateStudentProfileRequest request);
 
     StudentResponse getMyStudent();
@@ -27,4 +30,3 @@ public interface StudentService {
 
     StudentResponse updateVerificationStatus(String id, VerificationStatus verificationStatus);
 }
-
