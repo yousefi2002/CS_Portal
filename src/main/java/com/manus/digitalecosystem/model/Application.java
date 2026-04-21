@@ -28,6 +28,9 @@ public class Application {
     private String companyId;
 
     @Indexed
+    private String opportunityId;
+
+    @Indexed
     private String studentId;
 
     private OpportunityType opportunityType;
