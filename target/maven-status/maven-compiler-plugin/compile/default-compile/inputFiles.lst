@@ -1,23 +1,81 @@
-E:\f\2022\Computer Science\8th Semester\Thesis\cs_project\src\main\java\com\manus\digitalecosystem\dto\request\LoginRequest.java
-E:\f\2022\Computer Science\8th Semester\Thesis\cs_project\src\main\java\com\manus\digitalecosystem\exception\ResourceNotFoundException.java
-E:\f\2022\Computer Science\8th Semester\Thesis\cs_project\src\main\java\com\manus\digitalecosystem\exception\ApiException.java
-E:\f\2022\Computer Science\8th Semester\Thesis\cs_project\src\main\java\com\manus\digitalecosystem\exception\GlobalExceptionHandler.java
-E:\f\2022\Computer Science\8th Semester\Thesis\cs_project\src\main\java\com\manus\digitalecosystem\DigitalEcosystemApplication.java
-E:\f\2022\Computer Science\8th Semester\Thesis\cs_project\src\main\java\com\manus\digitalecosystem\model\Role.java
-E:\f\2022\Computer Science\8th Semester\Thesis\cs_project\src\main\java\com\manus\digitalecosystem\dto\response\JwtResponse.java
-E:\f\2022\Computer Science\8th Semester\Thesis\cs_project\src\main\java\com\manus\digitalecosystem\exception\DuplicateResourceException.java
-E:\f\2022\Computer Science\8th Semester\Thesis\cs_project\src\main\java\com\manus\digitalecosystem\controller\AuthController.java
-E:\f\2022\Computer Science\8th Semester\Thesis\cs_project\src\main\java\com\manus\digitalecosystem\model\User.java
-E:\f\2022\Computer Science\8th Semester\Thesis\cs_project\src\main\java\com\manus\digitalecosystem\security\WebSecurityConfig.java
-E:\f\2022\Computer Science\8th Semester\Thesis\cs_project\src\main\java\com\manus\digitalecosystem\service\impl\UserServiceImpl.java
-E:\f\2022\Computer Science\8th Semester\Thesis\cs_project\src\main\java\com\manus\digitalecosystem\repository\UserRepository.java
-E:\f\2022\Computer Science\8th Semester\Thesis\cs_project\src\main\java\com\manus\digitalecosystem\security\AuthTokenFilter.java
-E:\f\2022\Computer Science\8th Semester\Thesis\cs_project\src\main\java\com\manus\digitalecosystem\dto\request\CreateUserRequest.java
-E:\f\2022\Computer Science\8th Semester\Thesis\cs_project\src\main\java\com\manus\digitalecosystem\security\UserDetailsImpl.java
-E:\f\2022\Computer Science\8th Semester\Thesis\cs_project\src\main\java\com\manus\digitalecosystem\security\JwtUtils.java
-E:\f\2022\Computer Science\8th Semester\Thesis\cs_project\src\main\java\com\manus\digitalecosystem\security\UserDetailsServiceImpl.java
-E:\f\2022\Computer Science\8th Semester\Thesis\cs_project\src\main\java\com\manus\digitalecosystem\config\DataSeeder.java
-E:\f\2022\Computer Science\8th Semester\Thesis\cs_project\src\main\java\com\manus\digitalecosystem\controller\UserController.java
-E:\f\2022\Computer Science\8th Semester\Thesis\cs_project\src\main\java\com\manus\digitalecosystem\service\UserService.java
-E:\f\2022\Computer Science\8th Semester\Thesis\cs_project\src\main\java\com\manus\digitalecosystem\config\OpenApiConfig.java
-E:\f\2022\Computer Science\8th Semester\Thesis\cs_project\src\main\java\com\manus\digitalecosystem\dto\response\UserResponse.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/UpdateDepartmentRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/UpdateUniversityProfileRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/model/Course.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/CreateTaskRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/UpdateJobRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/model/Student.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/exception/DuplicateResourceException.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/CreateApplicationRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/exception/ResourceNotFoundException.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/DigitalEcosystemApplication.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/repository/CompanyRepository.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/model/enums/Role.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/repository/InternshipRepository.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/CreateDepartmentAdminAccountRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/security/AuthTokenFilter.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/model/Company.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/model/enums/JobType.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/security/UserDetailsServiceImpl.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/CreateDepartmentRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/model/enums/Status.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/model/Achievement.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/UpdateAnnouncementRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/UpdateApplicationStatusRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/security/RestAccessDeniedHandler.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/UpdateCompanyProfileRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/model/enums/VerificationStatus.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/model/AchievementContributor.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/repository/JobRepository.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/model/Notification.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/CreateAnnouncementRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/model/User.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/repository/AchievementRepository.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/repository/DepartmentRepository.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/model/enums/OpportunityType.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/exception/GlobalExceptionHandler.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/model/Job.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/exception/BadRequestException.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/CreateCompanyProfileRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/UpdateDepartmentCurriculumRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/util/SecurityUtils.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/ForgotPasswordRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/CreateStudentAccountRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/UpdateUserStatusRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/exception/ApiExceptionBase.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/LoginRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/UpdateStudentProfileRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/model/enums/NotificationType.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/model/enums/ApplicationStatus.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/CreateAchievementRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/repository/PasswordResetTokenRepository.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/model/Department.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/CreateJobRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/security/UserDetailsImpl.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/config/DataSeeder.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/model/University.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/model/Application.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/UpdateInternshipRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/config/LocaleConfig.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/config/OpenApiConfig.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/CreateUniversityProfileRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/repository/UserRepository.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/ResetPasswordRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/model/CurriculumSemester.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/model/PasswordResetToken.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/repository/StudentRepository.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/UpdateVerificationStatusRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/security/RestAuthenticationEntryPoint.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/repository/UniversityRepository.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/UpdateAchievementRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/CreateUserRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/repository/ApplicationRepository.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/model/Internship.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/CreateStudentProfileRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/exception/ApiErrorResponse.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/model/Announcement.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/dto/request/CreateInternshipRequest.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/repository/NotificationRepository.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/security/WebSecurityConfig.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/security/JwtUtils.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/model/enums/AnnouncementCategory.java
+/home/runner/work/CS_Portal/CS_Portal/src/main/java/com/manus/digitalecosystem/repository/AnnouncementRepository.java
