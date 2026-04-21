@@ -38,7 +38,8 @@ public class UserDetailsImpl implements UserDetails {
                 user.getEmail(),
                 user.getPassword(),
                 authorities,
-                user.getStatus() == User.Status.ACTIVE);
+        true);
+        //user.getStatus() == User.Status.ACTIVE
     }
 
     @Override

@@ -27,7 +27,7 @@ public class DataSeeder implements CommandLineRunner {
                     .email("admin@manus.im")
                     .password(passwordEncoder.encode("admin123"))
                     .role(Role.SUPER_ADMIN)
-                    .status(User.Status.ACTIVE)
+//                    .status(User.Status.ACTIVE)
                     .build();
             userRepository.save(admin);
             System.out.println("Initial Super Admin created: admin@manus.im / admin123");

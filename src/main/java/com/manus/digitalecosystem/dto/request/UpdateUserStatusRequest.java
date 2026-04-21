@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class UpdateUserStatusRequest {
 
-    @NotNull(message = "{validation.user.status.required}")
-    private User.Status status;
+//    @NotNull(message = "{validation.user.status.required}")
+//    private User.Status status;
 }
 

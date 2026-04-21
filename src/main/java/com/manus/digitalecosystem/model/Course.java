@@ -14,12 +14,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.Instant;
 import java.util.List;
 
-@Document(collection = "courses")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @CompoundIndex(def = "{'departmentId': 1, 'code': 1}", unique = true)
+@Document(collection = "courses")
 public class Course {
 
     @Id
