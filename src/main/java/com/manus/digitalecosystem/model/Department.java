@@ -9,7 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-
+import java.util.List;
 import java.time.Instant;
 
 @Data
@@ -34,7 +34,11 @@ public class Department {
     @Indexed
     private String adminUserId;
 
-    private DepartmentCurriculum curriculum;
+    private List<String> goals;
+
+    private List<String> outcomes;
+
+    private List<CurriculumSemester> semesters;
 
     @CreatedDate
     private Instant createdAt;

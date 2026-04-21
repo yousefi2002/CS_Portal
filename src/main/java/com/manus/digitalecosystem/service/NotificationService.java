@@ -2,7 +2,7 @@ package com.manus.digitalecosystem.service;
 
 import com.manus.digitalecosystem.dto.response.NotificationResponse;
 import com.manus.digitalecosystem.dto.response.PagedResponse;
-import com.manus.digitalecosystem.model.NotificationType;
+import com.manus.digitalecosystem.model.enums.NotificationType;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

@@ -3,7 +3,7 @@ package com.manus.digitalecosystem.service;
 import com.manus.digitalecosystem.dto.request.CreateUserRequest;
 import com.manus.digitalecosystem.dto.response.UserResponse;
 import com.manus.digitalecosystem.exception.DuplicateResourceException;
-import com.manus.digitalecosystem.model.Role;
+import com.manus.digitalecosystem.model.enums.Role;
 import com.manus.digitalecosystem.model.User;
 import com.manus.digitalecosystem.repository.UserRepository;
 import com.manus.digitalecosystem.service.impl.UserServiceImpl;

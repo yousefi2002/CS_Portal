@@ -1,5 +1,6 @@
 package com.manus.digitalecosystem.model;
 
+import com.manus.digitalecosystem.model.enums.VerificationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -46,6 +47,10 @@ public class Student {
 
     @Indexed
     private VerificationStatus verificationStatus;
+
+    private boolean isTopStudent;
+
+    private String topStudentCategory;
 
     @CreatedDate
     private Instant createdAt;

@@ -1,4 +1,4 @@
-package com.manus.digitalecosystem.model;
+package com.manus.digitalecosystem.model.enums;
 
 public enum NotificationType {
     UNIVERSITY_ANNOUNCEMENT,

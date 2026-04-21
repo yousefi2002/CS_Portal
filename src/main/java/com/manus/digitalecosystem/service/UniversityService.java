@@ -4,7 +4,7 @@ import com.manus.digitalecosystem.dto.request.CreateUniversityProfileRequest;
 import com.manus.digitalecosystem.dto.request.UpdateUniversityProfileRequest;
 import com.manus.digitalecosystem.dto.response.PagedResponse;
 import com.manus.digitalecosystem.dto.response.UniversityResponse;
-import com.manus.digitalecosystem.model.VerificationStatus;
+import com.manus.digitalecosystem.model.enums.VerificationStatus;
 import org.springframework.data.domain.Pageable;
 
 public interface UniversityService {

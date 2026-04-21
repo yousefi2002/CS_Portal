@@ -1,7 +1,7 @@
 package com.manus.digitalecosystem.repository;
 
 import com.manus.digitalecosystem.model.Application;
-import com.manus.digitalecosystem.model.OpportunityType;
+import com.manus.digitalecosystem.model.enums.OpportunityType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;

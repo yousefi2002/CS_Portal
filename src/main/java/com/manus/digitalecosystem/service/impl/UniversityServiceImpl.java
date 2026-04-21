@@ -7,7 +7,7 @@ import com.manus.digitalecosystem.dto.response.UniversityResponse;
 import com.manus.digitalecosystem.exception.DuplicateResourceException;
 import com.manus.digitalecosystem.exception.ResourceNotFoundException;
 import com.manus.digitalecosystem.model.University;
-import com.manus.digitalecosystem.model.VerificationStatus;
+import com.manus.digitalecosystem.model.enums.VerificationStatus;
 import com.manus.digitalecosystem.repository.UniversityRepository;
 import com.manus.digitalecosystem.service.UniversityService;
 import com.manus.digitalecosystem.util.SecurityUtils;

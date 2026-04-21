@@ -4,7 +4,7 @@ import com.manus.digitalecosystem.dto.request.CreateAnnouncementRequest;
 import com.manus.digitalecosystem.dto.request.UpdateAnnouncementRequest;
 import com.manus.digitalecosystem.dto.response.AnnouncementResponse;
 import com.manus.digitalecosystem.dto.response.PagedResponse;
-import com.manus.digitalecosystem.model.AnnouncementCategory;
+import com.manus.digitalecosystem.model.enums.AnnouncementCategory;
 import com.manus.digitalecosystem.service.AnnouncementService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

@@ -6,7 +6,7 @@ import com.manus.digitalecosystem.dto.request.UpdateStudentProfileRequest;
 import com.manus.digitalecosystem.dto.request.UpdateVerificationStatusRequest;
 import com.manus.digitalecosystem.dto.response.PagedResponse;
 import com.manus.digitalecosystem.dto.response.StudentResponse;
-import com.manus.digitalecosystem.model.VerificationStatus;
+import com.manus.digitalecosystem.model.enums.VerificationStatus;
 import com.manus.digitalecosystem.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

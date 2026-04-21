@@ -4,7 +4,7 @@ import com.manus.digitalecosystem.dto.response.NotificationResponse;
 import com.manus.digitalecosystem.dto.response.PagedResponse;
 import com.manus.digitalecosystem.exception.ResourceNotFoundException;
 import com.manus.digitalecosystem.model.Notification;
-import com.manus.digitalecosystem.model.NotificationType;
+import com.manus.digitalecosystem.model.enums.NotificationType;
 import com.manus.digitalecosystem.repository.NotificationRepository;
 import com.manus.digitalecosystem.service.NotificationService;
 import com.manus.digitalecosystem.util.SecurityUtils;

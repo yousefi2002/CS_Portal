@@ -7,7 +7,7 @@ import com.manus.digitalecosystem.dto.response.PagedResponse;
 import com.manus.digitalecosystem.exception.DuplicateResourceException;
 import com.manus.digitalecosystem.exception.ResourceNotFoundException;
 import com.manus.digitalecosystem.model.Company;
-import com.manus.digitalecosystem.model.VerificationStatus;
+import com.manus.digitalecosystem.model.enums.VerificationStatus;
 import com.manus.digitalecosystem.repository.CompanyRepository;
 import com.manus.digitalecosystem.service.CompanyService;
 import com.manus.digitalecosystem.util.SecurityUtils;

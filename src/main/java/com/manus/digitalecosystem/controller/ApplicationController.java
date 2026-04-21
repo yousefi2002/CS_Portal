@@ -4,7 +4,7 @@ import com.manus.digitalecosystem.dto.request.CreateApplicationRequest;
 import com.manus.digitalecosystem.dto.request.UpdateApplicationStatusRequest;
 import com.manus.digitalecosystem.dto.response.ApplicationResponse;
 import com.manus.digitalecosystem.dto.response.PagedResponse;
-import com.manus.digitalecosystem.model.OpportunityType;
+import com.manus.digitalecosystem.model.enums.OpportunityType;
 import com.manus.digitalecosystem.service.ApplicationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

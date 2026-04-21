@@ -1,7 +1,7 @@
 package com.manus.digitalecosystem.repository;
 
 import com.manus.digitalecosystem.model.Company;
-import com.manus.digitalecosystem.model.VerificationStatus;
+import com.manus.digitalecosystem.model.enums.VerificationStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;

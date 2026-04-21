@@ -1,8 +1,8 @@
 package com.manus.digitalecosystem.dto.response;
 
 import com.manus.digitalecosystem.model.Application;
-import com.manus.digitalecosystem.model.ApplicationStatus;
-import com.manus.digitalecosystem.model.OpportunityType;
+import com.manus.digitalecosystem.model.enums.ApplicationStatus;
+import com.manus.digitalecosystem.model.enums.OpportunityType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

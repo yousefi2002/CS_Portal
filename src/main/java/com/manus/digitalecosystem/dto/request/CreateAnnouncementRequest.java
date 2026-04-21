@@ -1,6 +1,6 @@
 package com.manus.digitalecosystem.dto.request;
 
-import com.manus.digitalecosystem.model.AnnouncementCategory;
+import com.manus.digitalecosystem.model.enums.AnnouncementCategory;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

@@ -8,7 +8,7 @@ import com.manus.digitalecosystem.dto.response.TaskResponse;
 import com.manus.digitalecosystem.exception.BadRequestException;
 import com.manus.digitalecosystem.exception.ResourceNotFoundException;
 import com.manus.digitalecosystem.model.Department;
-import com.manus.digitalecosystem.model.NotificationType;
+import com.manus.digitalecosystem.model.enums.NotificationType;
 import com.manus.digitalecosystem.model.Student;
 import com.manus.digitalecosystem.model.Task;
 import com.manus.digitalecosystem.model.University;

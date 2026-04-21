@@ -1,5 +1,6 @@
 package com.manus.digitalecosystem.model;
 
+import com.manus.digitalecosystem.model.enums.NotificationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

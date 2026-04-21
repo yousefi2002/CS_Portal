@@ -1,7 +1,7 @@
 package com.manus.digitalecosystem.dto.response;
 
 import com.manus.digitalecosystem.model.Announcement;
-import com.manus.digitalecosystem.model.AnnouncementCategory;
+import com.manus.digitalecosystem.model.enums.AnnouncementCategory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

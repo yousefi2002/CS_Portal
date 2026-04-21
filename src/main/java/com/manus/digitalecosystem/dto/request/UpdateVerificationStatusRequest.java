@@ -1,6 +1,6 @@
 package com.manus.digitalecosystem.dto.request;
 
-import com.manus.digitalecosystem.model.VerificationStatus;
+import com.manus.digitalecosystem.model.enums.VerificationStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 

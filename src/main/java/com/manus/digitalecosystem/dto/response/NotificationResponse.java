@@ -1,7 +1,7 @@
 package com.manus.digitalecosystem.dto.response;
 
 import com.manus.digitalecosystem.model.Notification;
-import com.manus.digitalecosystem.model.NotificationType;
+import com.manus.digitalecosystem.model.enums.NotificationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

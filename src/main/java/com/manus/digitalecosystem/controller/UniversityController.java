@@ -5,7 +5,7 @@ import com.manus.digitalecosystem.dto.request.UpdateUniversityProfileRequest;
 import com.manus.digitalecosystem.dto.request.UpdateVerificationStatusRequest;
 import com.manus.digitalecosystem.dto.response.PagedResponse;
 import com.manus.digitalecosystem.dto.response.UniversityResponse;
-import com.manus.digitalecosystem.model.VerificationStatus;
+import com.manus.digitalecosystem.model.enums.VerificationStatus;
 import com.manus.digitalecosystem.service.UniversityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

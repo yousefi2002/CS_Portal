@@ -1,7 +1,7 @@
 package com.manus.digitalecosystem.dto.response;
 
 import com.manus.digitalecosystem.model.University;
-import com.manus.digitalecosystem.model.VerificationStatus;
+import com.manus.digitalecosystem.model.enums.VerificationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

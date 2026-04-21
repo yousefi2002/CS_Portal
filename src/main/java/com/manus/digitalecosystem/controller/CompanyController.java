@@ -5,7 +5,7 @@ import com.manus.digitalecosystem.dto.request.UpdateCompanyProfileRequest;
 import com.manus.digitalecosystem.dto.request.UpdateVerificationStatusRequest;
 import com.manus.digitalecosystem.dto.response.CompanyResponse;
 import com.manus.digitalecosystem.dto.response.PagedResponse;
-import com.manus.digitalecosystem.model.VerificationStatus;
+import com.manus.digitalecosystem.model.enums.VerificationStatus;
 import com.manus.digitalecosystem.service.CompanyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

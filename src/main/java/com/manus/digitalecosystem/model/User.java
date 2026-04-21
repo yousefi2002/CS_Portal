@@ -1,5 +1,7 @@
 package com.manus.digitalecosystem.model;
 
+import com.manus.digitalecosystem.model.enums.Role;
+import com.manus.digitalecosystem.model.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +24,8 @@ public class User {
     @Id
     private String id;
 
+    String fullName;
+
     @Indexed(unique = true)
     private String email;
 
@@ -36,8 +40,4 @@ public class User {
 
     @LastModifiedDate
     private Instant updatedAt;
-
-    public enum Status {
-        PENDING, ACTIVE, SUSPENDED
-    }
 }

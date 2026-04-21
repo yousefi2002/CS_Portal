@@ -1,6 +1,6 @@
 package com.manus.digitalecosystem.dto.request;
 
-import com.manus.digitalecosystem.model.Role;
+import com.manus.digitalecosystem.model.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -5,7 +5,7 @@ import com.manus.digitalecosystem.dto.request.CreateStudentProfileRequest;
 import com.manus.digitalecosystem.dto.request.UpdateStudentProfileRequest;
 import com.manus.digitalecosystem.dto.response.PagedResponse;
 import com.manus.digitalecosystem.dto.response.StudentResponse;
-import com.manus.digitalecosystem.model.VerificationStatus;
+import com.manus.digitalecosystem.model.enums.VerificationStatus;
 import org.springframework.data.domain.Pageable;
 
 public interface StudentService {

@@ -1,6 +1,6 @@
 package com.manus.digitalecosystem.dto.response;
 
-import com.manus.digitalecosystem.model.Role;
+import com.manus.digitalecosystem.model.enums.Role;
 import com.manus.digitalecosystem.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

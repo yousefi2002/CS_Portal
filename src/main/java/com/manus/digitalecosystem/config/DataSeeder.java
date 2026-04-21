@@ -1,6 +1,6 @@
 package com.manus.digitalecosystem.config;
 
-import com.manus.digitalecosystem.model.Role;
+import com.manus.digitalecosystem.model.enums.Role;
 import com.manus.digitalecosystem.model.User;
 import com.manus.digitalecosystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

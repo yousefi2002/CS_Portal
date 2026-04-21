@@ -1,5 +1,7 @@
 package com.manus.digitalecosystem.model;
 
+import com.manus.digitalecosystem.model.enums.ApplicationStatus;
+import com.manus.digitalecosystem.model.enums.OpportunityType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

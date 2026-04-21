@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
+import java.util.List;
 
 @Data
 @Builder
@@ -23,22 +24,20 @@ public class Achievement {
     private String id;
 
     @Indexed
-    private String studentId;
-
-    @Indexed
     private String universityId;
 
     @Indexed
     private String departmentId;
 
-    private String title;
+    private String type;
 
+    private String title;
     private String description;
 
-    private Instant achievedAt;
+    private String link;
+    private String imageFileId;
 
-    @Indexed
-    private String createdByUserId;
+    private List<AchievementContributor> contributors;
 
     @CreatedDate
     private Instant createdAt;

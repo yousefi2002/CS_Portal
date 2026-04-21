@@ -14,7 +14,7 @@ import com.manus.digitalecosystem.model.CurriculumCourse;
 import com.manus.digitalecosystem.model.CurriculumSemester;
 import com.manus.digitalecosystem.model.Department;
 import com.manus.digitalecosystem.model.DepartmentCurriculum;
-import com.manus.digitalecosystem.model.Role;
+import com.manus.digitalecosystem.model.enums.Role;
 import com.manus.digitalecosystem.model.User;
 import com.manus.digitalecosystem.model.University;
 import com.manus.digitalecosystem.repository.DepartmentRepository;
