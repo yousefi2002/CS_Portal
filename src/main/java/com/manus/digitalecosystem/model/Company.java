@@ -27,9 +27,9 @@ public class Company {
 
     private String description;
 
-    private String developmentType;
+    private int numberOfEmployees;
 
-    private String achievements;
+    private String developmentType;
 
     private String website;
 

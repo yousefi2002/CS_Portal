@@ -1,6 +1,5 @@
 package com.manus.digitalecosystem.dto.response;
 
-import com.manus.digitalecosystem.model.Task;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

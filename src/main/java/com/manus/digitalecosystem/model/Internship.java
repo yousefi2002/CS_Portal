@@ -26,15 +26,23 @@ public class Internship {
     @Indexed
     private String companyId;
 
-    private String title;
+    private String companyName;
 
-    private String description;
+    private String companyDescription;
+
+    private String companyImage;
+
+    private String internshipTitle;
+
+    private String internshipDescription;
 
     private String requirements;
 
     private String roadmap;
 
     private String duration;
+
+    private int vacancies;
 
     private List<String> requiredSkills;
 

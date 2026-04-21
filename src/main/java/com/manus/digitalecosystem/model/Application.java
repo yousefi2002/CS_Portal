@@ -25,21 +25,29 @@ public class Application {
     private String id;
 
     @Indexed
-    private String studentId;
-
-    @Indexed
     private String companyId;
 
     @Indexed
-    private OpportunityType opportunityType;
+    private String studentId;
 
-    @Indexed
-    private String opportunityId;
+    private OpportunityType opportunityType;
 
     @Indexed
     private ApplicationStatus status;
 
-    private String note;
+    private String studentName;
+    private String studentImage;
+    private String studentEmail;
+
+    private String resumeFileId;
+    private String portfolioLink;
+
+    private String coverLetter;
+    private String companyNote;
+    private String rejectionReason;
+
+    private Instant reviewedAt;
+    private Instant decisionAt;
 
     @CreatedDate
     private Instant createdAt;

@@ -1,5 +1,6 @@
 package com.manus.digitalecosystem.model;
 
+import com.manus.digitalecosystem.model.enums.JobType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,11 +27,23 @@ public class Job {
     @Indexed
     private String companyId;
 
-    private String title;
+    private String companyName;
 
-    private String description;
+    private String companyDescription;
 
-    private String requirements;
+    private String companyImage;
+
+    private String jobTitle;
+
+    private String jobDescription;
+
+    private double salary;
+
+    private JobType type;
+
+    private int vacancies;
+
+    private List<String> requirement;
 
     private String location;
 

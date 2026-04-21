@@ -29,6 +29,9 @@ public class Achievement {
     @Indexed
     private String departmentId;
 
+    @Indexed
+    private String companyId;
+
     private String type;
 
     private String title;
