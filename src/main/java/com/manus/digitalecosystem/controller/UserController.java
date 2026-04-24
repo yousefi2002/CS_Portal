@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @PreAuthorize("isAuthenticated() and !hasRole('COMPANY_ADMIN')")
     public ResponseEntity<Response<UserResponse>> createUser(@Valid @RequestBody CreateUserRequest request) {
         return apiResponseFactory.success(HttpStatus.CREATED, "success.user.created", userService.createUser(request));
     }
@@ -47,6 +47,7 @@ public class UserController {
     }
 
     @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Response<UserResponse>> getCurrentUser() {
         return apiResponseFactory.success(HttpStatus.OK, "success.user.me", userService.getCurrentUser());
     }
@@ -66,7 +67,7 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}/role")
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @PreAuthorize("isAuthenticated() and !hasRole('COMPANY_ADMIN')")
     public ResponseEntity<Response<UserResponse>> updateRole(@PathVariable String userId,
                                                              @Valid @RequestBody UpdateUserRoleRequest request) {
         return apiResponseFactory.success(HttpStatus.OK, "success.user.role_updated",
