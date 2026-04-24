@@ -1,6 +1,5 @@
 package com.manus.digitalecosystem.config;
 
-import com.manus.digitalecosystem.model.LocalizedText;
 import com.manus.digitalecosystem.model.User;
 import com.manus.digitalecosystem.model.enums.Role;
 import com.manus.digitalecosystem.model.enums.Status;
@@ -26,11 +25,7 @@ public class DataSeeder implements CommandLineRunner {
     public void run(String... args) {
         if (!userRepository.existsByEmail("admin@gmail.com")) {
             User admin = User.builder()
-                    .fullName(LocalizedText.builder()
-                            .en("System Administrator")
-                            .fa("مدیر سیستم")
-                            .ps("د سیسټم مدیر")
-                            .build())
+                .fullName("System Administrator")
                     .email("admin@gmail.com")
                     .password(passwordEncoder.encode("admin123"))
                     .role(Role.SUPER_ADMIN)

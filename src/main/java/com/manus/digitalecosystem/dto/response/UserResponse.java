@@ -1,6 +1,5 @@
 package com.manus.digitalecosystem.dto.response;
 
-import com.manus.digitalecosystem.model.LocalizedText;
 import com.manus.digitalecosystem.model.enums.Role;
 import com.manus.digitalecosystem.model.enums.Status;
 import lombok.Builder;
@@ -12,7 +11,7 @@ import java.time.Instant;
 @Builder
 public class UserResponse {
     private String id;
-    private LocalizedText fullName;
+    private String fullName;
     private String email;
     private Role role;
     private Status status;

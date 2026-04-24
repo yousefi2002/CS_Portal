@@ -3,7 +3,6 @@ package com.manus.digitalecosystem.service;
 import com.manus.digitalecosystem.dto.request.CreateUserRequest;
 import com.manus.digitalecosystem.dto.response.UserResponse;
 import com.manus.digitalecosystem.exception.DuplicateResourceException;
-import com.manus.digitalecosystem.model.LocalizedText;
 import com.manus.digitalecosystem.model.User;
 import com.manus.digitalecosystem.model.enums.Role;
 import com.manus.digitalecosystem.model.enums.Status;
@@ -48,7 +47,7 @@ class UserServiceTest {
         createUserRequest.setEmail("test@example.com");
         createUserRequest.setPassword("password123");
         createUserRequest.setRole(Role.STUDENT);
-        createUserRequest.setFullName(LocalizedText.builder().en("Test User").fa("کاربر تست").ps("ازموینې کارن").build());
+        createUserRequest.setFullName("Test User");
 
         user = User.builder()
                 .id("1")
@@ -80,5 +79,26 @@ class UserServiceTest {
         assertThrows(DuplicateResourceException.class, () -> userService.createUser(createUserRequest));
 
         verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void updateRole_Success() {
+        when(userRepository.findById("1")).thenReturn(java.util.Optional.of(user));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        UserResponse response = userService.updateRole("1", Role.SUPER_ADMIN);
+
+        assertNotNull(response);
+        assertEquals(Role.SUPER_ADMIN, response.getRole());
+        verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    void deleteUser_Success() {
+        when(userRepository.findById("1")).thenReturn(java.util.Optional.of(user));
+
+        userService.deleteUser("1");
+
+        verify(userRepository, times(1)).delete(user);
     }
 }

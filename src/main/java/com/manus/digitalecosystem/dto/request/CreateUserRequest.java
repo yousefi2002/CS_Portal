@@ -1,9 +1,7 @@
 package com.manus.digitalecosystem.dto.request;
 
-import com.manus.digitalecosystem.model.LocalizedText;
 import com.manus.digitalecosystem.model.enums.Role;
 import com.manus.digitalecosystem.model.enums.Status;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,9 +10,8 @@ import lombok.Data;
 
 @Data
 public class CreateUserRequest {
-    @NotNull(message = "{validation.user.full_name.required}")
-    @Valid
-    private LocalizedText fullName;
+    @NotBlank(message = "{validation.user.full_name.required}")
+    private String fullName;
 
     @NotBlank(message = "{validation.email.required}")
     @Email(message = "{validation.email.invalid}")

@@ -2,11 +2,10 @@ package com.manus.digitalecosystem.service.impl;
 
 import com.manus.digitalecosystem.dto.request.CreateUserRequest;
 import com.manus.digitalecosystem.dto.response.UserResponse;
-import com.manus.digitalecosystem.exception.BadRequestException;
 import com.manus.digitalecosystem.exception.DuplicateResourceException;
 import com.manus.digitalecosystem.exception.ResourceNotFoundException;
-import com.manus.digitalecosystem.model.LocalizedText;
 import com.manus.digitalecosystem.model.User;
+import com.manus.digitalecosystem.model.enums.Role;
 import com.manus.digitalecosystem.model.enums.Status;
 import com.manus.digitalecosystem.repository.UserRepository;
 import com.manus.digitalecosystem.service.UserService;
@@ -33,8 +32,6 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new DuplicateResourceException("error.user.email.exists", request.getEmail());
         }
-
-        validateLocalizedText(request.getFullName());
 
         User user = User.builder()
                 .fullName(request.getFullName())
@@ -71,22 +68,22 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toResponse(userRepository.save(user));
     }
 
+    @Override
+    public UserResponse updateRole(String userId, Role role) {
+        User user = findUserById(userId);
+        user.setRole(role);
+        return UserMapper.toResponse(userRepository.save(user));
+    }
+
+    @Override
+    public void deleteUser(String userId) {
+        User user = findUserById(userId);
+        userRepository.delete(user);
+    }
+
     private User findUserById(String userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("error.user.not_found", userId));
-    }
-
-    private void validateLocalizedText(LocalizedText localizedText) {
-        if (localizedText == null
-                || isBlank(localizedText.getEn())
-                || isBlank(localizedText.getFa())
-                || isBlank(localizedText.getPs())) {
-            throw new BadRequestException("error.user.translation.required");
-        }
-    }
-
-    private boolean isBlank(String value) {
-        return value == null || value.isBlank();
     }
 }
 

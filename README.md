@@ -54,7 +54,7 @@ Once the application is running, you can access the Swagger UI at:
 `http://localhost:8080/swagger-ui.html`
 
 ## Security
-- **Authentication**: `POST /api/auth/login`
+- **Authentication**: `POST /api/v1/auth/login`
 - **Authorization**: Use the Bearer token in the `Authorization` header for protected endpoints.
 - **Roles**: `SUPER_ADMIN`, `UNIVERSITY_ADMIN`, `DEPARTMENT_ADMIN`, `STUDENT`, `COMPANY_ADMIN`.
 
@@ -75,31 +75,21 @@ All success and error responses now use a unified DTO structure:
 }
 ```
 
-## Multilingual Data Shape
-Translatable values are stored in MongoDB with this shape:
-
-```json
-{
-  "fa": "",
-  "en": "",
-  "ps": ""
-}
-```
-
-`User.fullName` now follows this format.
-
 ## Auth Endpoints
-- `POST /api/auth/login` (email + password)
-- `POST /api/auth/logout`
-- `POST /api/auth/forgot-password`
-- `POST /api/auth/reset-password`
+- `POST /api/v1/auth/login` (email + password)
+- `POST /api/v1/auth/logout`
+- `POST /api/v1/auth/refresh-token`
+- `POST /api/v1/auth/forgot-password`
+- `POST /api/v1/auth/reset-password`
 
 ## User Endpoints
-- `POST /api/users` (SUPER_ADMIN)
-- `GET /api/users` (SUPER_ADMIN)
-- `GET /api/users/me`
-- `GET /api/users/{userId}` (SUPER_ADMIN)
-- `PATCH /api/users/{userId}/status` (SUPER_ADMIN)
+- `POST /api/v1/users` (SUPER_ADMIN)
+- `GET /api/v1/users` (SUPER_ADMIN)
+- `GET /api/v1/users/me`
+- `GET /api/v1/users/{userId}` (SUPER_ADMIN)
+- `PATCH /api/v1/users/{userId}/status` (SUPER_ADMIN)
+- `PATCH /api/v1/users/{userId}/role` (SUPER_ADMIN)
+- `DELETE /api/v1/users/{userId}` (SUPER_ADMIN)
 
 ## Error Handling
 The API returns logical error messages in the following format:

@@ -24,7 +24,7 @@ public class User {
     @Id
     private String id;
 
-    private LocalizedText fullName;
+    private String fullName;
 
     @Indexed(unique = true)
     private String email;
