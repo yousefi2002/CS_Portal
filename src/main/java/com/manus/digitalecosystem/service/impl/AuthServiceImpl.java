@@ -2,19 +2,24 @@ package com.manus.digitalecosystem.service.impl;
 
 import com.manus.digitalecosystem.dto.request.ForgotPasswordRequest;
 import com.manus.digitalecosystem.dto.request.LoginRequest;
+import com.manus.digitalecosystem.dto.request.RefreshTokenRequest;
 import com.manus.digitalecosystem.dto.request.ResetPasswordRequest;
 import com.manus.digitalecosystem.dto.response.AuthLoginResponse;
 import com.manus.digitalecosystem.dto.response.ForgotPasswordResponse;
 import com.manus.digitalecosystem.exception.BadRequestException;
 import com.manus.digitalecosystem.exception.ResourceNotFoundException;
+import com.manus.digitalecosystem.exception.UnauthorizedException;
 import com.manus.digitalecosystem.model.PasswordResetToken;
+import com.manus.digitalecosystem.model.RefreshToken;
 import com.manus.digitalecosystem.model.User;
 import com.manus.digitalecosystem.model.enums.Status;
 import com.manus.digitalecosystem.repository.PasswordResetTokenRepository;
+import com.manus.digitalecosystem.repository.RefreshTokenRepository;
 import com.manus.digitalecosystem.repository.UserRepository;
 import com.manus.digitalecosystem.security.JwtUtils;
 import com.manus.digitalecosystem.service.AuthService;
 import com.manus.digitalecosystem.service.mapper.UserMapper;
+import com.manus.digitalecosystem.util.SecurityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,20 +42,26 @@ public class AuthServiceImpl implements AuthService {
     private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Value("${manus.app.jwtExpirationMs:86400000}")
-    private int jwtExpirationMs;
+    @Value("${manus.app.jwtExpirationMs:3600000}")
+    private long jwtExpirationMs;
+
+    @Value("${manus.app.jwtRefreshExpirationMs:2592000000}")
+    private long jwtRefreshExpirationMs;
 
     public AuthServiceImpl(AuthenticationManager authenticationManager,
                            JwtUtils jwtUtils,
                            UserRepository userRepository,
                            PasswordResetTokenRepository passwordResetTokenRepository,
+                           RefreshTokenRepository refreshTokenRepository,
                            PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
         this.userRepository = userRepository;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -68,16 +79,62 @@ public class AuthServiceImpl implements AuthService {
             throw new BadRequestException("error.user.inactive");
         }
 
+        return issueTokensForUser(user);
+    }
+
+    @Override
+    public AuthLoginResponse refreshToken(RefreshTokenRequest request) {
+        RefreshToken refreshToken = refreshTokenRepository.findByTokenHash(hashToken(request.getRefreshToken()))
+                .orElseThrow(() -> new UnauthorizedException("error.auth.unauthorized"));
+
+        if (refreshToken.getExpiresAt().isBefore(Instant.now())) {
+            refreshTokenRepository.delete(refreshToken);
+            throw new UnauthorizedException("error.auth.unauthorized");
+        }
+
+        String userId = refreshToken.getUserId();
+        if (userId == null) {
+            throw new UnauthorizedException("error.auth.unauthorized");
+        }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UnauthorizedException("error.auth.unauthorized"));
+
+        if (user.getStatus() != Status.ACTIVE) {
+            throw new UnauthorizedException("error.auth.unauthorized");
+        }
+
+        return issueTokensForUser(user);
+    }
+
+    private AuthLoginResponse issueTokensForUser(User user) {
+        String accessToken = jwtUtils.generateJwtTokenFromUsername(user.getEmail());
+        String rawRefreshToken = UUID.randomUUID().toString();
+        Instant refreshExpiresAt = Instant.now().plusMillis(jwtRefreshExpirationMs);
+
+        refreshTokenRepository.findByUserId(user.getId())
+            .ifPresent(refreshTokenRepository::delete);
+
+        RefreshToken refreshToken = RefreshToken.builder()
+                .tokenHash(hashToken(rawRefreshToken))
+                .userId(user.getId())
+                .expiresAt(refreshExpiresAt)
+                .build();
+        refreshTokenRepository.save(refreshToken);
+
         return AuthLoginResponse.builder()
-                .token(jwtUtils.generateJwtToken(authentication))
+                .token(accessToken)
+                .refreshToken(rawRefreshToken)
                 .tokenType("Bearer")
-                .expiresInSeconds(jwtExpirationMs / 1000)
+                .expiresInSeconds((int) (jwtExpirationMs / 1000))
+                .refreshTokenExpiresInSeconds((int) (jwtRefreshExpirationMs / 1000))
                 .user(UserMapper.toResponse(user))
                 .build();
     }
 
     @Override
     public void logout() {
+        refreshTokenRepository.deleteByUserId(SecurityUtils.getCurrentUserId());
         SecurityContextHolder.clearContext();
     }
 

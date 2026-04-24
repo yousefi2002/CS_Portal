@@ -2,6 +2,7 @@ package com.manus.digitalecosystem.controller;
 
 import com.manus.digitalecosystem.dto.request.ForgotPasswordRequest;
 import com.manus.digitalecosystem.dto.request.LoginRequest;
+import com.manus.digitalecosystem.dto.request.RefreshTokenRequest;
 import com.manus.digitalecosystem.dto.request.ResetPasswordRequest;
 import com.manus.digitalecosystem.dto.response.AuthLoginResponse;
 import com.manus.digitalecosystem.dto.response.ForgotPasswordResponse;
@@ -39,6 +40,11 @@ public class AuthController {
     public ResponseEntity<Response<Object>> logout() {
         authService.logout();
         return apiResponseFactory.success(HttpStatus.OK, "success.auth.logout", null);
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<Response<AuthLoginResponse>> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
+        return apiResponseFactory.success(HttpStatus.OK, "success.auth.login", authService.refreshToken(request));
     }
 
     @PostMapping("/forgot-password")

@@ -19,13 +19,17 @@ public class JwtUtils {
     @Value("${manus.app.jwtSecret:ManusDigitalEcosystemSecretKeyForJWTAuthentication1234567890}")
     private String jwtSecret;
 
-    @Value("${manus.app.jwtExpirationMs:86400000}")
-    private int jwtExpirationMs;
+    @Value("${manus.app.jwtExpirationMs:3600000}")
+    private long jwtExpirationMs;
 
     public String generateJwtToken(Authentication authentication) {
         UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+        return generateJwtTokenFromUsername(userPrincipal.getUsername());
+    }
+
+    public String generateJwtTokenFromUsername(String username) {
         return Jwts.builder()
-                .setSubject((userPrincipal.getUsername()))
+                .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
