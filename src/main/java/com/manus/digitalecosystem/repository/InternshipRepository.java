@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 public interface InternshipRepository extends MongoRepository<Internship, String> {
     Page<Internship> findByCompanyId(String companyId, Pageable pageable);
 
-    Page<Internship> findByTitleContainingIgnoreCase(String title, Pageable pageable);
+    Page<Internship> findByInternshipTitleContainingIgnoreCase(String internshipTitle, Pageable pageable);
 
-    Page<Internship> findByCompanyIdAndTitleContainingIgnoreCase(String companyId, String title, Pageable pageable);
+    Page<Internship> findByCompanyIdAndInternshipTitleContainingIgnoreCase(String companyId, String internshipTitle, Pageable pageable);
 }
 

@@ -2,6 +2,7 @@ package com.manus.digitalecosystem.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.manus.digitalecosystem.model.User;
+import com.manus.digitalecosystem.model.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -38,8 +39,8 @@ public class UserDetailsImpl implements UserDetails {
                 user.getEmail(),
                 user.getPassword(),
                 authorities,
-        true);
-        //user.getStatus() == User.Status.ACTIVE
+                user.getStatus() == Status.ACTIVE
+        );
     }
 
     @Override

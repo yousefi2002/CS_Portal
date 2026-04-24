@@ -1,75 +1,56 @@
 package com.manus.digitalecosystem.exception;
 
+import com.manus.digitalecosystem.dto.response.Response;
+import com.manus.digitalecosystem.util.ApiResponseFactory;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    private final MessageSource messageSource;
+    private final ApiResponseFactory apiResponseFactory;
 
-    public GlobalExceptionHandler(MessageSource messageSource) {
-        this.messageSource = messageSource;
+    public GlobalExceptionHandler(ApiResponseFactory apiResponseFactory) {
+        this.apiResponseFactory = apiResponseFactory;
     }
 
     @ExceptionHandler(value = {ApiExceptionBase.class})
-    public ResponseEntity<ApiErrorResponse> handleApiExceptionBase(ApiExceptionBase ex, HttpServletRequest request) {
-        Locale locale = LocaleContextHolder.getLocale();
-        String message = localize(ex.getMessageKey(), ex.getMessageArgs(), ex.getMessage(), locale);
-
-        ApiErrorResponse apiError = ApiErrorResponse.builder()
-                .message(message)
-                .messageKey(ex.getMessageKey())
-                .httpStatus(ex.getHttpStatus())
-                .timestamp(nowUtc())
-                .path(request.getRequestURI())
-                .build();
-
-        return new ResponseEntity<>(apiError, ex.getHttpStatus());
+    public ResponseEntity<Response<Object>> handleApiExceptionBase(ApiExceptionBase ex, HttpServletRequest request) {
+        Map<String, Object> errors = Map.of("path", request.getRequestURI());
+        return apiResponseFactory.error(ex.getHttpStatus(), ex.getMessageKey(), ex.getMessage(), errors, ex.getMessageArgs());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex, HttpServletRequest request) {
-        Locale locale = LocaleContextHolder.getLocale();
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
+    public ResponseEntity<Response<Object>> handleValidationExceptions(MethodArgumentNotValidException ex, HttpServletRequest request) {
+        Map<String, Object> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
+            errors.put(fieldName, error.getDefaultMessage());
         });
+        errors.put("path", request.getRequestURI());
 
-        ApiErrorResponse apiError = ApiErrorResponse.builder()
-                .message(localize("error.validation.failed", null, "Validation failed", locale))
-                .messageKey("error.validation.failed")
-                .errors(errors)
-                .httpStatus(HttpStatus.BAD_REQUEST)
-                .timestamp(nowUtc())
-                .path(request.getRequestURI())
-                .build();
-
-        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+        return apiResponseFactory.error(
+                HttpStatus.BAD_REQUEST,
+                "error.validation.failed",
+                "Validation failed",
+                errors
+        );
     }
 
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<ApiErrorResponse> handleAuthenticationException(AuthenticationException ex, HttpServletRequest request) {
-        Locale locale = LocaleContextHolder.getLocale();
+    public ResponseEntity<Response<Object>> handleAuthenticationException(AuthenticationException ex, HttpServletRequest request) {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
         String messageKey = "error.auth.bad_credentials";
         String fallback = "Invalid email or password";
@@ -83,50 +64,31 @@ public class GlobalExceptionHandler {
             fallback = "Unauthorized";
         }
 
-        ApiErrorResponse apiError = ApiErrorResponse.builder()
-                .message(localize(messageKey, null, fallback, locale))
-                .messageKey(messageKey)
-                .httpStatus(status)
-                .timestamp(nowUtc())
-                .path(request.getRequestURI())
-                .build();
-        return new ResponseEntity<>(apiError, status);
+        return apiResponseFactory.error(
+                status,
+                messageKey,
+                fallback,
+                Map.of("path", request.getRequestURI())
+        );
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ApiErrorResponse> handleAccessDeniedException(AccessDeniedException ex, HttpServletRequest request) {
-        Locale locale = LocaleContextHolder.getLocale();
-        ApiErrorResponse apiError = ApiErrorResponse.builder()
-                .message(localize("error.auth.forbidden", null, "Forbidden", locale))
-                .messageKey("error.auth.forbidden")
-                .httpStatus(HttpStatus.FORBIDDEN)
-                .timestamp(nowUtc())
-                .path(request.getRequestURI())
-                .build();
-        return new ResponseEntity<>(apiError, HttpStatus.FORBIDDEN);
+    public ResponseEntity<Response<Object>> handleAccessDeniedException(AccessDeniedException ex, HttpServletRequest request) {
+        return apiResponseFactory.error(
+                HttpStatus.FORBIDDEN,
+                "error.auth.forbidden",
+                "Forbidden",
+                Map.of("path", request.getRequestURI())
+        );
     }
 
     @ExceptionHandler(value = {Exception.class})
-    public ResponseEntity<ApiErrorResponse> handleGeneralException(Exception ex, HttpServletRequest request) {
-        Locale locale = LocaleContextHolder.getLocale();
-        ApiErrorResponse apiError = ApiErrorResponse.builder()
-                .message(localize("error.unexpected", null, "An unexpected error occurred", locale))
-                .messageKey("error.unexpected")
-                .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-                .timestamp(nowUtc())
-                .path(request.getRequestURI())
-                .build();
-        return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    private ZonedDateTime nowUtc() {
-        return ZonedDateTime.now(ZoneId.of("Z"));
-    }
-
-    private String localize(String messageKey, Object[] messageArgs, String fallback, Locale locale) {
-        if (messageKey == null || messageKey.isBlank()) {
-            return fallback;
-        }
-        return messageSource.getMessage(messageKey, messageArgs, fallback, locale);
+    public ResponseEntity<Response<Object>> handleGeneralException(Exception ex, HttpServletRequest request) {
+        return apiResponseFactory.error(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "error.unexpected",
+                "An unexpected error occurred",
+                Map.of("path", request.getRequestURI())
+        );
     }
 }

@@ -1,7 +1,9 @@
 package com.manus.digitalecosystem.config;
 
-import com.manus.digitalecosystem.model.enums.Role;
+import com.manus.digitalecosystem.model.LocalizedText;
 import com.manus.digitalecosystem.model.User;
+import com.manus.digitalecosystem.model.enums.Role;
+import com.manus.digitalecosystem.model.enums.Status;
 import com.manus.digitalecosystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -21,16 +23,21 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
-        if (!userRepository.existsByEmail("admin@manus.im")) {
+    public void run(String... args) {
+        if (!userRepository.existsByEmail("admin@gmail.com")) {
             User admin = User.builder()
-                    .email("admin@manus.im")
+                    .fullName(LocalizedText.builder()
+                            .en("System Administrator")
+                            .fa("مدیر سیستم")
+                            .ps("د سیسټم مدیر")
+                            .build())
+                    .email("admin@gmail.com")
                     .password(passwordEncoder.encode("admin123"))
                     .role(Role.SUPER_ADMIN)
-//                    .status(User.Status.ACTIVE)
+                    .status(Status.ACTIVE)
                     .build();
             userRepository.save(admin);
-            System.out.println("Initial Super Admin created: admin@manus.im / admin123");
+            System.out.println("Initial Super Admin created: admin@gmail.com / admin123");
         }
     }
 }

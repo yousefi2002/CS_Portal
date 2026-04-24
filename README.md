@@ -58,6 +58,49 @@ Once the application is running, you can access the Swagger UI at:
 - **Authorization**: Use the Bearer token in the `Authorization` header for protected endpoints.
 - **Roles**: `SUPER_ADMIN`, `UNIVERSITY_ADMIN`, `DEPARTMENT_ADMIN`, `STUDENT`, `COMPANY_ADMIN`.
 
+## API Response Contract
+All success and error responses now use a unified DTO structure:
+
+```json
+{
+  "success": true,
+  "status": 200,
+  "message": "Localized message",
+  "data": {},
+  "errors": null,
+  "meta": null,
+  "pagination": null,
+  "timestamp": "2026-04-21T10:00:00",
+  "requestId": "uuid"
+}
+```
+
+## Multilingual Data Shape
+Translatable values are stored in MongoDB with this shape:
+
+```json
+{
+  "fa": "",
+  "en": "",
+  "ps": ""
+}
+```
+
+`User.fullName` now follows this format.
+
+## Auth Endpoints
+- `POST /api/auth/login` (email + password)
+- `POST /api/auth/logout`
+- `POST /api/auth/forgot-password`
+- `POST /api/auth/reset-password`
+
+## User Endpoints
+- `POST /api/users` (SUPER_ADMIN)
+- `GET /api/users` (SUPER_ADMIN)
+- `GET /api/users/me`
+- `GET /api/users/{userId}` (SUPER_ADMIN)
+- `PATCH /api/users/{userId}/status` (SUPER_ADMIN)
+
 ## Error Handling
 The API returns logical error messages in the following format:
 ```json
