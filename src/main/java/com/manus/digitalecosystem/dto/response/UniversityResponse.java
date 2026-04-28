@@ -1,31 +1,27 @@
-package com.manus.digitalecosystem.dto.request;
+package com.manus.digitalecosystem.dto.response;
 
 import com.manus.digitalecosystem.model.LocalizedText;
 import com.manus.digitalecosystem.model.enums.UniversityVisibility;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
+import com.manus.digitalecosystem.model.enums.VerificationStatus;
+import lombok.Builder;
 import lombok.Data;
 
+import java.time.Instant;
+
 @Data
-public class UpdateUniversityProfileRequest {
-
-    @NotNull(message = "{validation.university.name.required}")
+@Builder
+public class UniversityResponse {
+    private String id;
     private LocalizedText name;
-
     private LocalizedText description;
-
     private LocalizedText address;
-
-    @NotNull(message = "{validation.university.visibility.required}")
     private UniversityVisibility visibility;
-
     private String website;
-
     private String phone;
-
-    @Email(message = "{validation.email.invalid}")
     private String email;
-
     private String imageFileId;
+    private String adminUserId;
+    private VerificationStatus verificationStatus;
+    private Instant createdAt;
+    private Instant updatedAt;
 }
-

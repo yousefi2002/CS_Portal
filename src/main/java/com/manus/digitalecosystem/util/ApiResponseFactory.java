@@ -1,5 +1,6 @@
 package com.manus.digitalecosystem.util;
 
+import com.manus.digitalecosystem.dto.response.Pagination;
 import com.manus.digitalecosystem.dto.response.Response;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -28,6 +29,23 @@ public class ApiResponseFactory {
                 .status(status.value())
                 .message(localize(messageKey, messageArgs, "Success"))
                 .data(data)
+                .timestamp(LocalDateTime.now(ZoneOffset.UTC))
+                .requestId(UUID.randomUUID().toString())
+                .build();
+        return ResponseEntity.status(status).body(body);
+    }
+
+    public <T> ResponseEntity<Response<T>> success(HttpStatus status,
+                                                   String messageKey,
+                                                   T data,
+                                                   Pagination pagination,
+                                                   Object... messageArgs) {
+        Response<T> body = Response.<T>builder()
+                .success(true)
+                .status(status.value())
+                .message(localize(messageKey, messageArgs, "Success"))
+                .data(data)
+                .pagination(pagination)
                 .timestamp(LocalDateTime.now(ZoneOffset.UTC))
                 .requestId(UUID.randomUUID().toString())
                 .build();

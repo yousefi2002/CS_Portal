@@ -1,6 +1,7 @@
 package com.manus.digitalecosystem.model;
 
 import com.manus.digitalecosystem.model.enums.VerificationStatus;
+import com.manus.digitalecosystem.model.enums.UniversityVisibility;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,6 +29,8 @@ public class University {
     private LocalizedText description;
 
     private LocalizedText address;
+
+    private UniversityVisibility visibility;
 
     private String website;
 
