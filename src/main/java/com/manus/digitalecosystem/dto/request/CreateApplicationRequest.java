@@ -1,5 +1,6 @@
 package com.manus.digitalecosystem.dto.request;
 
+import com.manus.digitalecosystem.model.LocalizedText;
 import com.manus.digitalecosystem.model.enums.OpportunityType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,6 +15,6 @@ public class CreateApplicationRequest {
     @NotBlank(message = "{validation.application.opportunity_id.required}")
     private String opportunityId;
 
-    private String note;
+    private LocalizedText note;
 }
 

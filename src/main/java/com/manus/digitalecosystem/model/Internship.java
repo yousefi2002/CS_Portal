@@ -26,25 +26,25 @@ public class Internship {
     @Indexed
     private String companyId;
 
-    private String companyName;
+    private LocalizedText companyName;
 
-    private String companyDescription;
+    private LocalizedText companyDescription;
 
     private String companyImage;
 
-    private String internshipTitle;
+    private LocalizedText internshipTitle;
 
-    private String internshipDescription;
+    private LocalizedText internshipDescription;
 
-    private String requirements;
+    private LocalizedText requirements;
 
-    private String roadmap;
+    private LocalizedText roadmap;
 
-    private String duration;
+    private LocalizedText duration;
 
     private int vacancies;
 
-    private List<String> requiredSkills;
+    private List<LocalizedText> requiredSkills;
 
     @CreatedDate
     private Instant createdAt;

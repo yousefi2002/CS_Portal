@@ -1,6 +1,7 @@
 package com.manus.digitalecosystem.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
+import com.manus.digitalecosystem.model.LocalizedText;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.List;
@@ -8,17 +9,17 @@ import java.util.List;
 @Data
 public class CreateInternshipRequest {
 
-    @NotBlank(message = "{validation.internship.title.required}")
-    private String title;
+    @NotNull(message = "{validation.internship.title.required}")
+    private LocalizedText title;
 
-    private String description;
+    private LocalizedText description;
 
-    private String requirements;
+    private LocalizedText requirements;
 
-    private String roadmap;
+    private LocalizedText roadmap;
 
-    private String duration;
+    private LocalizedText duration;
 
-    private List<String> requiredSkills;
+    private List<LocalizedText> requiredSkills;
 }
 

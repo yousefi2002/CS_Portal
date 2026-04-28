@@ -1,18 +1,19 @@
 package com.manus.digitalecosystem.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
+import com.manus.digitalecosystem.model.LocalizedText;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class CreateDepartmentRequest {
 
-    @NotBlank(message = "{validation.department.university_id.required}")
+    @NotNull(message = "{validation.department.university_id.required}")
     private String universityId;
 
-    @NotBlank(message = "{validation.department.name.required}")
-    private String name;
+    @NotNull(message = "{validation.department.name.required}")
+    private LocalizedText name;
 
-    private String description;
+    private LocalizedText description;
 
     private String imageFileId;
 

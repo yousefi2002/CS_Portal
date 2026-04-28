@@ -1,5 +1,6 @@
 package com.manus.digitalecosystem.dto.request;
 
+import com.manus.digitalecosystem.model.LocalizedText;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -13,9 +14,9 @@ public class UpdateStudentProfileRequest {
 
     private String phone;
 
-    private String bio;
+    private LocalizedText bio;
 
-    private List<String> skills;
+    private List<LocalizedText> skills;
 
     private String imageFileId;
 }

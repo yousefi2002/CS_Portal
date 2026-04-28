@@ -25,18 +25,18 @@ public class Department {
     @Indexed
     private String universityId;
 
-    private String name;
+    private LocalizedText name;
 
-    private String description;
+    private LocalizedText description;
 
     private String imageFileId;
 
     @Indexed
     private String adminUserId;
 
-    private List<String> goals;
+    private List<LocalizedText> goals;
 
-    private List<String> outcomes;
+    private List<LocalizedText> outcomes;
 
     private List<CurriculumSemester> semesters;
 

@@ -31,9 +31,9 @@ public class Announcement {
 
     private AnnouncementCategory category;
 
-    private String title;
+    private LocalizedText title;
 
-    private String content;
+    private LocalizedText content;
 
     @Indexed
     private String createdByUserId;

@@ -1,6 +1,7 @@
 package com.manus.digitalecosystem.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
+import com.manus.digitalecosystem.model.LocalizedText;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.Instant;
@@ -9,10 +10,10 @@ import java.util.List;
 @Data
 public class CreateTaskRequest {
 
-    @NotBlank(message = "{validation.task.title.required}")
-    private String title;
+    @NotNull(message = "{validation.task.title.required}")
+    private LocalizedText title;
 
-    private String description;
+    private LocalizedText description;
 
     private Instant dueAt;
 

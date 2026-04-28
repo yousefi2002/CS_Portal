@@ -1,5 +1,6 @@
 package com.manus.digitalecosystem.dto.request;
 
+import com.manus.digitalecosystem.model.LocalizedText;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,21 +9,21 @@ import java.util.List;
 
 @Data
 public class UpdateDepartmentCurriculumRequest {
-    private List<String> departmentGoals;
+    private List<LocalizedText> departmentGoals;
     private List<Course> courses;
     private List<Semester> semesters;
-    private List<String> finalOutcomes;
+    private List<LocalizedText> finalOutcomes;
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Course {
         private String code;
-        private String title;
-        private String description;
-        private List<String> outcomes;
-        private List<String> skills;
-        private List<String> prerequisites;
+        private LocalizedText title;
+        private LocalizedText description;
+        private List<LocalizedText> outcomes;
+        private List<LocalizedText> skills;
+        private List<LocalizedText> prerequisites;
     }
 
     @Data
@@ -30,7 +31,7 @@ public class UpdateDepartmentCurriculumRequest {
     @AllArgsConstructor
     public static class Semester {
         private int number;
-        private List<String> outcomes;
+        private List<LocalizedText> outcomes;
         private List<String> courseCodes;
     }
 }

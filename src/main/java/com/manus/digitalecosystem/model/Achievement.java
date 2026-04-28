@@ -34,8 +34,8 @@ public class Achievement {
 
     private String type;
 
-    private String title;
-    private String description;
+    private LocalizedText title;
+    private LocalizedText description;
 
     private String link;
     private String imageFileId;

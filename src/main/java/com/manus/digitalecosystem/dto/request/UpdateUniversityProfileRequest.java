@@ -1,18 +1,19 @@
 package com.manus.digitalecosystem.dto.request;
 
+import com.manus.digitalecosystem.model.LocalizedText;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class UpdateUniversityProfileRequest {
 
-    @NotBlank(message = "{validation.university.name.required}")
-    private String name;
+    @NotNull(message = "{validation.university.name.required}")
+    private LocalizedText name;
 
-    private String description;
+    private LocalizedText description;
 
-    private String address;
+    private LocalizedText address;
 
     private String website;
 

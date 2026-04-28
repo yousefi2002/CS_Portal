@@ -1,20 +1,21 @@
 package com.manus.digitalecosystem.dto.request;
 
+import com.manus.digitalecosystem.model.LocalizedText;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class CreateCompanyProfileRequest {
 
-    @NotBlank(message = "{validation.company.name.required}")
-    private String name;
+    @NotNull(message = "{validation.company.name.required}")
+    private LocalizedText name;
 
-    private String description;
+    private LocalizedText description;
 
-    private String developmentType;
+    private LocalizedText developmentType;
 
-    private String achievements;
+    private LocalizedText achievements;
 
     private String website;
 

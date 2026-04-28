@@ -27,15 +27,15 @@ public class Job {
     @Indexed
     private String companyId;
 
-    private String companyName;
+    private LocalizedText companyName;
 
-    private String companyDescription;
+    private LocalizedText companyDescription;
 
     private String companyImage;
 
-    private String jobTitle;
+    private LocalizedText jobTitle;
 
-    private String jobDescription;
+    private LocalizedText jobDescription;
 
     private double salary;
 
@@ -43,11 +43,11 @@ public class Job {
 
     private int vacancies;
 
-    private List<String> requirement;
+    private List<LocalizedText> requirement;
 
-    private String location;
+    private LocalizedText location;
 
-    private List<String> requiredSkills;
+    private List<LocalizedText> requiredSkills;
 
     @CreatedDate
     private Instant createdAt;

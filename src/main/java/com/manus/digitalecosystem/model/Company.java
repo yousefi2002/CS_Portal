@@ -23,13 +23,13 @@ public class Company {
     @Id
     private String id;
 
-    private String name;
+    private LocalizedText name;
 
-    private String description;
+    private LocalizedText description;
 
     private int numberOfEmployees;
 
-    private String developmentType;
+    private LocalizedText developmentType;
 
     private String website;
 

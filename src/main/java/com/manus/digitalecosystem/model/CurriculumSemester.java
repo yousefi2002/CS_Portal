@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CurriculumSemester {
     private int number;
-    private List<String> outcomes;
-    private List<String> goals;
+    private List<LocalizedText> outcomes;
+    private List<LocalizedText> goals;
     private List<String> courseIds;
 }

@@ -1,7 +1,7 @@
 package com.manus.digitalecosystem.dto.request;
 
+import com.manus.digitalecosystem.model.LocalizedText;
 import com.manus.digitalecosystem.model.enums.AnnouncementCategory;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -11,11 +11,11 @@ public class CreateAnnouncementRequest {
     @NotNull(message = "{validation.announcement.category.required}")
     private AnnouncementCategory category;
 
-    @NotBlank(message = "{validation.announcement.title.required}")
-    private String title;
+    @NotNull(message = "{validation.announcement.title.required}")
+    private LocalizedText title;
 
-    @NotBlank(message = "{validation.announcement.content.required}")
-    private String content;
+    @NotNull(message = "{validation.announcement.content.required}")
+    private LocalizedText content;
 
     private String universityId;
 

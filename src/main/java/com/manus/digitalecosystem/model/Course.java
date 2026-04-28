@@ -31,13 +31,13 @@ public class Course {
     private String code;
     private int credits;
 
-    private String title;
-    private String description;
+    private LocalizedText title;
+    private LocalizedText description;
     private String roadMapImage;
 
-    private List<String> outcomes;
-    private List<String> skills;
-    private List<String> prerequisites;
+    private List<LocalizedText> outcomes;
+    private List<LocalizedText> skills;
+    private List<LocalizedText> prerequisites;
 
     @CreatedDate
     private Instant createdAt;

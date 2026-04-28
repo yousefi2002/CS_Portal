@@ -23,11 +23,11 @@ public class University {
     @Id
     private String id;
 
-    private String name;
+    private LocalizedText name;
 
-    private String description;
+    private LocalizedText description;
 
-    private String address;
+    private LocalizedText address;
 
     private String website;
 

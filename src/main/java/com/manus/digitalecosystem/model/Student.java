@@ -33,7 +33,7 @@ public class Student {
 
     private String phone;
 
-    private String bio;
+    private LocalizedText bio;
 
     private List<String> skills;
 

@@ -45,9 +45,9 @@ public class Application {
     private String resumeFileId;
     private String portfolioLink;
 
-    private String coverLetter;
-    private String companyNote;
-    private String rejectionReason;
+    private LocalizedText coverLetter;
+    private LocalizedText companyNote;
+    private LocalizedText rejectionReason;
 
     private Instant reviewedAt;
     private Instant decisionAt;
