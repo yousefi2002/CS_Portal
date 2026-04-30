@@ -25,7 +25,5 @@ public class UpdateUniversityProfileRequest {
 
     @Email(message = "{validation.email.invalid}")
     private String email;
-
-    private String imageFileId;
 }
 

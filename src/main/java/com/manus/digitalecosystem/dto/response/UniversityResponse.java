@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.Instant;
+import java.util.List;
 
 @Data
 @Builder
@@ -19,7 +20,7 @@ public class UniversityResponse {
     private String website;
     private String phone;
     private String email;
-    private String imageFileId;
+    private List<String> imageFileIds;
     private String adminUserId;
     private VerificationStatus verificationStatus;
     private Instant createdAt;

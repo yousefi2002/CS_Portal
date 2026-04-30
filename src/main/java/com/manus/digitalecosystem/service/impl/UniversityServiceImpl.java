@@ -3,6 +3,7 @@ package com.manus.digitalecosystem.service.impl;
 import com.manus.digitalecosystem.dto.request.CreateUniversityProfileRequest;
 import com.manus.digitalecosystem.dto.request.UpdateUniversityProfileRequest;
 import com.manus.digitalecosystem.dto.response.UniversityResponse;
+import com.manus.digitalecosystem.exception.BadRequestException;
 import com.manus.digitalecosystem.exception.DuplicateResourceException;
 import com.manus.digitalecosystem.exception.ResourceNotFoundException;
 import com.manus.digitalecosystem.exception.UnauthorizedException;
@@ -22,27 +23,51 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 @Service
 public class UniversityServiceImpl implements UniversityService {
 
+    private static final int MIN_UNIVERSITY_IMAGES = 1;
+    private static final int MAX_UNIVERSITY_IMAGES = 5;
+
     private final UniversityRepository universityRepository;
     private final MongoTemplate mongoTemplate;
+    private final Path uploadBasePath;
 
-    public UniversityServiceImpl(UniversityRepository universityRepository, MongoTemplate mongoTemplate) {
+    public UniversityServiceImpl(UniversityRepository universityRepository,
+                                 MongoTemplate mongoTemplate,
+                                 @Value("${app.upload.base-path:uploads}") String uploadBasePath) {
         this.universityRepository = universityRepository;
         this.mongoTemplate = mongoTemplate;
+        this.uploadBasePath = Path.of(uploadBasePath).toAbsolutePath().normalize();
     }
 
     @Override
-    public UniversityResponse createUniversity(CreateUniversityProfileRequest request) {
+    public UniversityResponse createUniversity(CreateUniversityProfileRequest request, List<MultipartFile> images) {
+        System.out.println("Creating university with request: " + request + " and images count: " + (images != null ? images.size() : 0));
+        if (request == null) {
+            System.out.println("🎉🎉🎉");
+            throw new BadRequestException("error.university.data.required");
+        }
+
+        validateUniversityImages(images);
+
         if (universityRepository.findByAdminUserId(request.getAdminUserId()).isPresent()) {
             throw new DuplicateResourceException("error.university.profile.exists");
         }
@@ -55,12 +80,19 @@ public class UniversityServiceImpl implements UniversityService {
                 .website(request.getWebsite())
                 .phone(request.getPhone())
                 .email(request.getEmail())
-                .imageFileId(request.getImageFileId())
                 .adminUserId(request.getAdminUserId())
                 .verificationStatus(VerificationStatus.APPROVED)
                 .build();
 
-        return UniversityMapper.toResponse(universityRepository.save(university));
+        University savedUniversity = universityRepository.save(university);
+        try {
+            savedUniversity.setImageFileIds(storeUniversityImages(savedUniversity.getId(), images));
+            return UniversityMapper.toResponse(universityRepository.save(savedUniversity));
+        } catch (RuntimeException ex) {
+            System.out.println("Error occurred: " + ex.getMessage());
+            universityRepository.delete(savedUniversity);
+            throw ex;
+        }
     }
 
     @Override
@@ -75,7 +107,19 @@ public class UniversityServiceImpl implements UniversityService {
         university.setWebsite(request.getWebsite());
         university.setPhone(request.getPhone());
         university.setEmail(request.getEmail());
-        university.setImageFileId(request.getImageFileId());
+
+        return UniversityMapper.toResponse(universityRepository.save(university));
+    }
+
+    @Override
+    public UniversityResponse updateUniversityImages(String universityId, List<MultipartFile> images) {
+        validateUniversityImages(images);
+
+        University university = findUniversityById(universityId);
+        ensureCanManageUniversity(university);
+
+        deleteUniversityImageDirectory(university.getId());
+        university.setImageFileIds(storeUniversityImages(university.getId(), images));
 
         return UniversityMapper.toResponse(universityRepository.save(university));
     }
@@ -99,6 +143,7 @@ public class UniversityServiceImpl implements UniversityService {
     public void deleteUniversity(String universityId) {
         University university = findUniversityById(universityId);
         universityRepository.delete(university);
+        deleteUniversityImageDirectory(universityId);
     }
 
     @Override
@@ -199,5 +244,91 @@ public class UniversityServiceImpl implements UniversityService {
             return "";
         }
         return value.trim().toLowerCase(Locale.ROOT);
+    }
+
+    private void validateUniversityImages(List<MultipartFile> images) {
+        if (images == null || images.size() < MIN_UNIVERSITY_IMAGES) {
+            throw new BadRequestException("error.university.images.min", MIN_UNIVERSITY_IMAGES);
+        }
+
+        if (images.size() > MAX_UNIVERSITY_IMAGES) {
+            throw new BadRequestException("error.university.images.max", MAX_UNIVERSITY_IMAGES);
+        }
+
+        for (MultipartFile image : images) {
+            if (image == null || image.isEmpty()) {
+                throw new BadRequestException("error.university.images.invalid");
+            }
+
+            String contentType = image.getContentType();
+            if (contentType == null || !contentType.toLowerCase(Locale.ROOT).startsWith("image/")) {
+                throw new BadRequestException("error.university.images.invalid");
+            }
+        }
+    }
+
+    private List<String> storeUniversityImages(String universityId, List<MultipartFile> images) {
+        Path directory = resolveUniversityImageDirectory(universityId);
+        try {
+            Files.createDirectories(directory);
+            List<String> storedPaths = new ArrayList<>();
+
+            for (MultipartFile image : images) {
+                String extension = getSafeExtension(image.getOriginalFilename());
+                String filename = UUID.randomUUID() + extension;
+                Path target = directory.resolve(filename);
+                Files.copy(image.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
+
+                Path relativePath = uploadBasePath.relativize(target);
+                String uploadFolderName = uploadBasePath.getFileName() == null
+                    ? "uploads"
+                    : uploadBasePath.getFileName().toString();
+                storedPaths.add(uploadFolderName + "/" + relativePath.toString().replace('\\', '/'));
+            }
+
+            return storedPaths;
+        } catch (IOException ex) {
+            throw new BadRequestException("error.file.upload_failed");
+        }
+    }
+
+    private void deleteUniversityImageDirectory(String universityId) {
+        Path directory = resolveUniversityImageDirectory(universityId);
+        if (!Files.exists(directory)) {
+            return;
+        }
+
+        try (Stream<Path> walk = Files.walk(directory)) {
+            walk.sorted((a, b) -> b.getNameCount() - a.getNameCount())
+                    .forEach(path -> {
+                        try {
+                            Files.deleteIfExists(path);
+                        } catch (IOException ignored) {
+                        }
+                    });
+        } catch (IOException ignored) {
+        }
+    }
+
+    private Path resolveUniversityImageDirectory(String universityId) {
+        return uploadBasePath.resolve("university").resolve(universityId).normalize();
+    }
+
+    private String getSafeExtension(String originalFilename) {
+        if (!StringUtils.hasText(originalFilename)) {
+            return ".bin";
+        }
+
+        int dotIndex = originalFilename.lastIndexOf('.');
+        if (dotIndex == -1 || dotIndex == originalFilename.length() - 1) {
+            return ".bin";
+        }
+
+        String extension = originalFilename.substring(dotIndex).toLowerCase(Locale.ROOT);
+        if (!extension.matches("\\.[a-z0-9]{1,8}")) {
+            return ".bin";
+        }
+
+        return extension;
     }
 }

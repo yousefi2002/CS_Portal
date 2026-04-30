@@ -5,11 +5,16 @@ import com.manus.digitalecosystem.dto.request.UpdateUniversityProfileRequest;
 import com.manus.digitalecosystem.dto.response.UniversityResponse;
 import com.manus.digitalecosystem.model.enums.UniversityVisibility;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface UniversityService {
-    UniversityResponse createUniversity(CreateUniversityProfileRequest request);
+    UniversityResponse createUniversity(CreateUniversityProfileRequest request, List<MultipartFile> images);
 
     UniversityResponse updateUniversity(String universityId, UpdateUniversityProfileRequest request);
+
+    UniversityResponse updateUniversityImages(String universityId, List<MultipartFile> images);
 
     Page<UniversityResponse> getAllUniversities(int page, int size);
 

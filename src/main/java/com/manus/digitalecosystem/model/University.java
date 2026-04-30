@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
+import java.util.List;
 
 @Data
 @Builder
@@ -38,7 +39,7 @@ public class University {
 
     private String email;
 
-    private String imageFileId;
+    private List<String> imageFileIds;
 
     @Indexed
     private String adminUserId;

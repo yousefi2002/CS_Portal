@@ -17,7 +17,7 @@ public final class UniversityMapper {
                 .website(university.getWebsite())
                 .phone(university.getPhone())
                 .email(university.getEmail())
-                .imageFileId(university.getImageFileId())
+                .imageFileIds(university.getImageFileIds())
                 .adminUserId(university.getAdminUserId())
                 .verificationStatus(university.getVerificationStatus())
                 .createdAt(university.getCreatedAt())
