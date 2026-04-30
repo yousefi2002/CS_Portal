@@ -49,13 +49,16 @@ public class UniversityServiceImpl implements UniversityService {
     private final UniversityRepository universityRepository;
     private final MongoTemplate mongoTemplate;
     private final Path uploadBasePath;
+    private final String uploadBaseUrl;
 
     public UniversityServiceImpl(UniversityRepository universityRepository,
                                  MongoTemplate mongoTemplate,
-                                 @Value("${app.upload.base-path:uploads}") String uploadBasePath) {
+                                 @Value("${app.upload.base-path:uploads}") String uploadBasePath,
+                                 @Value("${app.upload.base-url:http://localhost:8080}") String uploadBaseUrl) {
         this.universityRepository = universityRepository;
         this.mongoTemplate = mongoTemplate;
         this.uploadBasePath = Path.of(uploadBasePath).toAbsolutePath().normalize();
+        this.uploadBaseUrl = uploadBaseUrl != null ? uploadBaseUrl.replaceAll("/+$", "") : "http://localhost:8080";
     }
 
     @Override
@@ -275,7 +278,7 @@ public class UniversityServiceImpl implements UniversityService {
 
             for (MultipartFile image : images) {
                 String extension = getSafeExtension(image.getOriginalFilename());
-                String filename = UUID.randomUUID() + extension;
+                String filename = generateShortImageName(extension);
                 Path target = directory.resolve(filename);
                 Files.copy(image.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
 
@@ -283,7 +286,9 @@ public class UniversityServiceImpl implements UniversityService {
                 String uploadFolderName = uploadBasePath.getFileName() == null
                     ? "uploads"
                     : uploadBasePath.getFileName().toString();
-                storedPaths.add(uploadFolderName + "/" + relativePath.toString().replace('\\', '/'));
+                String relative = uploadFolderName + "/" + relativePath.toString().replace('\\', '/');
+                String fullUrl = uploadBaseUrl + "/" + relative;
+                storedPaths.add(fullUrl);
             }
 
             return storedPaths;
@@ -330,5 +335,11 @@ public class UniversityServiceImpl implements UniversityService {
         }
 
         return extension;
+    }
+
+    private String generateShortImageName(String extension) {
+        String id = UUID.randomUUID().toString().replace("-", "");
+        String shortId = id.length() > 8 ? id.substring(0, 8) : id;
+        return "im" + shortId + extension;
     }
 }
