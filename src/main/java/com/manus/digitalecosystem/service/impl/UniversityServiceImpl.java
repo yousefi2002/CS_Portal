@@ -63,9 +63,7 @@ public class UniversityServiceImpl implements UniversityService {
 
     @Override
     public UniversityResponse createUniversity(CreateUniversityProfileRequest request, List<MultipartFile> images) {
-        System.out.println("Creating university with request: " + request + " and images count: " + (images != null ? images.size() : 0));
         if (request == null) {
-            System.out.println("🎉🎉🎉");
             throw new BadRequestException("error.university.data.required");
         }
 

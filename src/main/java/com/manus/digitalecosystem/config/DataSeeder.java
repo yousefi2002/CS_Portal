@@ -32,7 +32,6 @@ public class DataSeeder implements CommandLineRunner {
                     .status(Status.ACTIVE)
                     .build();
             userRepository.save(admin);
-            System.out.println("Initial Super Admin created: admin@gmail.com / admin123");
         }
     }
 }
