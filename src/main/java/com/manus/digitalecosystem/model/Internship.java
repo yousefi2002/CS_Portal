@@ -46,6 +46,9 @@ public class Internship {
 
     private List<LocalizedText> requiredSkills;
 
+    @Builder.Default
+    private boolean deleted = false;
+
     @CreatedDate
     private Instant createdAt;
 
