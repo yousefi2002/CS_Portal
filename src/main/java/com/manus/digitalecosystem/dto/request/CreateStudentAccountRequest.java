@@ -21,6 +21,7 @@ public class CreateStudentAccountRequest {
 
     private String phone;
 
+    @NotBlank(message = "{validation.student.university_id.required}")
     private String universityId;
 
     @NotBlank(message = "{validation.student.department_id.required}")

@@ -48,6 +48,14 @@ public class Student {
     @Indexed
     private VerificationStatus verificationStatus;
 
+    @Builder.Default
+    private boolean deleted = false;
+
+    @Builder.Default
+    private boolean graduated = false;
+
+    private Instant graduatedAt;
+
     private boolean isTopStudent;
 
     private String topStudentCategory;

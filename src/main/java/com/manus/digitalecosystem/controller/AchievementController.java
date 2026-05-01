@@ -122,7 +122,7 @@ public class AchievementController {
     }
 
     @PatchMapping("/{achievementId}/delete")
-    @PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('UNIVERSITY_ADMIN') or hasRole('DEPARTMENT_ADMIN') or hasRole('COMPANY_ADMIN')")
+    @PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('UNIVERSITY_ADMIN') or hasRole('DEPARTMENT_ADMIN') or hasRole('COMPANY_ADMIN') or hasRole('STUDENT')")
     public ResponseEntity<Response<AchievementResponse>> softDeleteAchievement(@PathVariable String achievementId,
                                                                               @Valid @RequestBody DeleteAchievementRequest request) {
         return apiResponseFactory.success(HttpStatus.OK, "success.achievement.deleted",

@@ -125,6 +125,10 @@ public class AchievementServiceImpl implements AchievementService {
         var student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new ResourceNotFoundException("error.student.not_found", studentId));
 
+        if (student.isDeleted() && !SecurityUtils.hasRole(Role.SUPER_ADMIN.name())) {
+            throw new ResourceNotFoundException("error.student.not_found", studentId);
+        }
+
         // if caller is student, ensure they only request their own
         if (SecurityUtils.hasRole(com.manus.digitalecosystem.model.enums.Role.STUDENT.name())) {
             var currentUserId = SecurityUtils.getCurrentUserId();

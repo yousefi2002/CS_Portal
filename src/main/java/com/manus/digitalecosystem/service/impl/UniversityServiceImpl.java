@@ -203,8 +203,10 @@ public class UniversityServiceImpl implements UniversityService {
         var university = findUniversityById(universityId);
         ensureCanViewUniversity(university);
 
-        // collect students in university
-        var students = studentRepository.findByUniversityId(universityId);
+        // collect students in university (hide soft-deleted students for non-super-admin callers)
+        var students = com.manus.digitalecosystem.util.SecurityUtils.hasRole(com.manus.digitalecosystem.model.enums.Role.SUPER_ADMIN.name())
+            ? studentRepository.findByUniversityId(universityId)
+            : studentRepository.findByUniversityIdAndDeletedFalse(universityId);
 
         // compute achievement counts per student using achievementRepository count
         var counts = new java.util.ArrayList<com.manus.digitalecosystem.dto.response.TopStudentResponse>();
