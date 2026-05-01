@@ -7,17 +7,14 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class UpdateDepartmentRequest {
+public class CreateSemesterRequest {
 
-    @NotNull(message = "{validation.department.name.required}")
-    private LocalizedText name;
-
-    private LocalizedText description;
+    @NotNull(message = "{validation.semester.number.required}")
+    private Integer number;
 
     private List<LocalizedText> goals;
 
     private List<LocalizedText> outcomes;
 
-    private String adminUserId;
+    private List<String> courseIds;
 }
-

@@ -4,6 +4,8 @@ import com.manus.digitalecosystem.model.LocalizedText;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class CreateDepartmentRequest {
 
@@ -15,7 +17,9 @@ public class CreateDepartmentRequest {
 
     private LocalizedText description;
 
-    private String imageFileId;
+    private List<LocalizedText> goals;
+
+    private List<LocalizedText> outcomes;
 
     private String adminUserId;
 }

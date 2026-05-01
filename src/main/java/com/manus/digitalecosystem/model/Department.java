@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.ArrayList;
 import java.util.List;
 import java.time.Instant;
 
@@ -29,7 +30,8 @@ public class Department {
 
     private LocalizedText description;
 
-    private String imageFileId;
+    @Builder.Default
+    private List<String> imageFileIds = new ArrayList<>();
 
     @Indexed
     private String adminUserId;
@@ -39,6 +41,9 @@ public class Department {
     private List<LocalizedText> outcomes;
 
     private List<CurriculumSemester> semesters;
+
+    @Builder.Default
+    private boolean deleted = false;
 
     @CreatedDate
     private Instant createdAt;

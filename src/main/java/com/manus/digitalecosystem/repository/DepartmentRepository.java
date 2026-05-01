@@ -14,6 +14,8 @@ public interface DepartmentRepository extends MongoRepository<Department, String
 
     Page<Department> findByUniversityId(String universityId, Pageable pageable);
 
+    Page<Department> findByUniversityIdAndDeletedFalse(String universityId, Pageable pageable);
+
     Page<Department> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
     Page<Department> findByUniversityIdAndNameContainingIgnoreCase(String universityId, String name, Pageable pageable);
