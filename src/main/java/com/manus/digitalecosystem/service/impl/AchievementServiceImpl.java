@@ -49,6 +49,7 @@ public class AchievementServiceImpl implements AchievementService {
     private final UniversityRepository universityRepository;
     private final DepartmentRepository departmentRepository;
     private final CompanyRepository companyRepository;
+    private final com.manus.digitalecosystem.repository.StudentRepository studentRepository;
     private final Path uploadBasePath;
     private final String uploadBaseUrl;
 
@@ -56,12 +57,14 @@ public class AchievementServiceImpl implements AchievementService {
                                   UniversityRepository universityRepository,
                                   DepartmentRepository departmentRepository,
                                   CompanyRepository companyRepository,
+                                  com.manus.digitalecosystem.repository.StudentRepository studentRepository,
                                   @Value("${app.upload.base-path:uploads}") String uploadBasePath,
                                   @Value("${app.upload.base-url:http://localhost:8080}") String uploadBaseUrl) {
         this.achievementRepository = achievementRepository;
         this.universityRepository = universityRepository;
         this.departmentRepository = departmentRepository;
         this.companyRepository = companyRepository;
+        this.studentRepository = studentRepository;
         this.uploadBasePath = Path.of(uploadBasePath).toAbsolutePath().normalize();
         this.uploadBaseUrl = uploadBaseUrl != null ? uploadBaseUrl.replaceAll("/+$", "") : "http://localhost:8080";
     }
@@ -198,6 +201,63 @@ public class AchievementServiceImpl implements AchievementService {
 
         achievement.setDeleted(true);
         return toResponse(achievementRepository.save(achievement));
+    }
+
+    @Override
+    public AchievementResponse assignStudentToAchievement(String achievementId, String studentId) {
+        Achievement achievement = findAchievementById(achievementId);
+
+        // student must exist
+        var student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("error.student.not_found", studentId));
+
+        // allow if super admin or admin who can manage achievement, or if the current user is the student
+        boolean isStudentCaller = student.getUserId() != null && SecurityUtils.getCurrentUserId().equals(student.getUserId());
+        if (!isStudentCaller) {
+            ensureCanManageAchievement(achievement);
+        }
+
+        if (achievement.getContributors() == null) {
+            achievement.setContributors(new ArrayList<>());
+        }
+
+        boolean already = achievement.getContributors().stream()
+                .anyMatch(c -> c.getStudentId() != null && c.getStudentId().equals(studentId));
+        if (!already) {
+            AchievementContributor contributor = AchievementContributor.builder()
+                    .studentId(student.getId())
+                    .name(student.getFullName())
+                    .imageFileId(student.getImageFileId())
+                    .role("student")
+                    .isExternal(false)
+                    .build();
+            achievement.getContributors().add(contributor);
+            achievement = achievementRepository.save(achievement);
+        }
+
+        return toResponse(achievement);
+    }
+
+    @Override
+    public AchievementResponse removeStudentFromAchievement(String achievementId, String studentId) {
+        Achievement achievement = findAchievementById(achievementId);
+
+        var student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("error.student.not_found", studentId));
+
+        boolean isStudentCaller = student.getUserId() != null && SecurityUtils.getCurrentUserId().equals(student.getUserId());
+        if (!isStudentCaller) {
+            ensureCanManageAchievement(achievement);
+        }
+
+        if (achievement.getContributors() != null) {
+            boolean removed = achievement.getContributors().removeIf(c -> c.getStudentId() != null && c.getStudentId().equals(studentId));
+            if (removed) {
+                achievement = achievementRepository.save(achievement);
+            }
+        }
+
+        return toResponse(achievement);
     }
 
     private AchievementResponse toResponse(Achievement achievement) {

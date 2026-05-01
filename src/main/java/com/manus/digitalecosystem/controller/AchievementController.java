@@ -122,6 +122,22 @@ public class AchievementController {
                 achievementService.softDeleteAchievement(achievementId, request));
     }
 
+        @PostMapping("/{achievementId}/students/{studentId}")
+        @PreAuthorize("isAuthenticated()")
+        public ResponseEntity<Response<AchievementResponse>> assignStudent(@PathVariable String achievementId,
+                                           @PathVariable String studentId) {
+        return apiResponseFactory.success(HttpStatus.OK, "success.achievement.updated",
+            achievementService.assignStudentToAchievement(achievementId, studentId));
+        }
+
+        @DeleteMapping("/{achievementId}/students/{studentId}")
+        @PreAuthorize("isAuthenticated()")
+        public ResponseEntity<Response<AchievementResponse>> removeStudent(@PathVariable String achievementId,
+                                           @PathVariable String studentId) {
+        return apiResponseFactory.success(HttpStatus.OK, "success.achievement.updated",
+            achievementService.removeStudentFromAchievement(achievementId, studentId));
+        }
+
     private <T> T parseRequest(String data, Class<T> requestType, String errorMessageKey) {
         if (data == null || data.isBlank()) {
             throw new BadRequestException(errorMessageKey);

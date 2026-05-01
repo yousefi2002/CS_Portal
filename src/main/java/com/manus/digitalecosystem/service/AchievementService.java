@@ -29,4 +29,8 @@ public interface AchievementService {
     void deleteAchievement(String achievementId);
 
     AchievementResponse softDeleteAchievement(String achievementId, DeleteAchievementRequest request);
+
+    AchievementResponse assignStudentToAchievement(String achievementId, String studentId);
+
+    AchievementResponse removeStudentFromAchievement(String achievementId, String studentId);
 }

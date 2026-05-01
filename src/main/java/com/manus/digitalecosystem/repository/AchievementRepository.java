@@ -19,5 +19,9 @@ public interface AchievementRepository extends MongoRepository<Achievement, Stri
 	List<Achievement> findByDepartmentIdInAndDeletedFalse(Collection<String> departmentIds);
 
 	List<Achievement> findByCompanyIdAndDeletedFalse(String companyId);
+
+	List<Achievement> findByContributorsStudentIdAndDeletedFalse(String studentId);
+
+	long countByContributorsStudentIdAndDeletedFalse(String studentId);
 }
 
