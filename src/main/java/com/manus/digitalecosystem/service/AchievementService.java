@@ -26,6 +26,8 @@ public interface AchievementService {
 
     List<AchievementResponse> getAchievementsByCompany(String companyId);
 
+    List<AchievementResponse> getAchievementsByStudent(String studentId);
+
     void deleteAchievement(String achievementId);
 
     AchievementResponse softDeleteAchievement(String achievementId, DeleteAchievementRequest request);

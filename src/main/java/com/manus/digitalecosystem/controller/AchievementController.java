@@ -49,7 +49,7 @@ public class AchievementController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('UNIVERSITY_ADMIN') or hasRole('DEPARTMENT_ADMIN') or hasRole('COMPANY_ADMIN')")
+    @PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('UNIVERSITY_ADMIN') or hasRole('DEPARTMENT_ADMIN') or hasRole('COMPANY_ADMIN') or hasRole('STUDENT')")
     public ResponseEntity<Response<AchievementResponse>> createAchievement(@RequestPart(value = "data", required = false) String data,
                                                                            @RequestPart(value = "images", required = false) List<MultipartFile> images) {
         CreateAchievementRequest request = parseRequest(data, CreateAchievementRequest.class, "error.achievement.data.required");
@@ -98,6 +98,13 @@ public class AchievementController {
     public ResponseEntity<Response<List<AchievementResponse>>> getAchievementsByCompany(@RequestParam String companyId) {
         return apiResponseFactory.success(HttpStatus.OK, "success.achievement.list",
                 achievementService.getAchievementsByCompany(companyId));
+    }
+
+    @GetMapping(params = "studentId")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Response<List<AchievementResponse>>> getAchievementsByStudent(@RequestParam String studentId) {
+        return apiResponseFactory.success(HttpStatus.OK, "success.achievement.list",
+                achievementService.getAchievementsByStudent(studentId));
     }
 
     @GetMapping("/{achievementId}")

@@ -72,7 +72,31 @@ public class AchievementServiceImpl implements AchievementService {
     @Override
     public AchievementResponse createAchievement(CreateAchievementRequest request, List<MultipartFile> images) {
         validateImages(images);
-        AchievementOwnership ownership = resolveCreateOwnership(request);
+        // If current user is a student, allow creating an achievement for themselves
+        AchievementOwnership ownership = null;
+        if (SecurityUtils.hasRole(com.manus.digitalecosystem.model.enums.Role.STUDENT.name())) {
+            var currentUserId = SecurityUtils.getCurrentUserId();
+            var student = studentRepository.findByUserId(currentUserId)
+                    .orElseThrow(() -> new ResourceNotFoundException("error.student.profile.not_found"));
+
+            ownership = new AchievementOwnership(student.getUniversityId(), student.getDepartmentId(), null);
+
+            // ensure contributors include the student
+            if (request.getContributors() == null || request.getContributors().stream().noneMatch(c -> student.getId().equals(c.getStudentId()))) {
+                var contrib = AchievementContributor.builder()
+                        .studentId(student.getId())
+                        .name(student.getFullName())
+                        .imageFileId(student.getImageFileId())
+                        .role("student")
+                        .isExternal(false)
+                        .build();
+                var list = request.getContributors() == null ? new ArrayList<AchievementContributor>() : new ArrayList<>(request.getContributors());
+                list.add(contrib);
+                request.setContributors(list);
+            }
+        } else {
+            ownership = resolveCreateOwnership(request);
+        }
 
         Achievement achievement = Achievement.builder()
                 .universityId(ownership.universityId())
@@ -94,6 +118,24 @@ public class AchievementServiceImpl implements AchievementService {
             deleteAchievementImageDirectory(savedAchievement.getId());
             throw ex;
         }
+    }
+
+    @Override
+    public List<AchievementResponse> getAchievementsByStudent(String studentId) {
+        var student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("error.student.not_found", studentId));
+
+        // if caller is student, ensure they only request their own
+        if (SecurityUtils.hasRole(com.manus.digitalecosystem.model.enums.Role.STUDENT.name())) {
+            var currentUserId = SecurityUtils.getCurrentUserId();
+            if (!currentUserId.equals(student.getUserId())) {
+                throw new UnauthorizedException("error.auth.forbidden");
+            }
+        }
+
+        return achievementRepository.findByContributorsStudentIdAndDeletedFalse(studentId).stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     @Override
@@ -312,6 +354,20 @@ public class AchievementServiceImpl implements AchievementService {
     }
 
     private void ensureCanManageAchievement(Achievement achievement) {
+        // allow contributor student to manage their own achievement
+        if (achievement.getContributors() != null && !achievement.getContributors().isEmpty()) {
+            for (AchievementContributor c : achievement.getContributors()) {
+                if (c.getStudentId() == null) continue;
+                var studentOpt = studentRepository.findById(c.getStudentId());
+                if (studentOpt.isPresent()) {
+                    var student = studentOpt.get();
+                    if (SecurityUtils.hasRole(com.manus.digitalecosystem.model.enums.Role.STUDENT.name())
+                            && SecurityUtils.getCurrentUserId().equals(student.getUserId())) {
+                        return;
+                    }
+                }
+            }
+        }
         if (achievement.getCompanyId() != null) {
             Company company = findCompanyById(achievement.getCompanyId());
             if (SecurityUtils.hasRole(Role.SUPER_ADMIN.name()) ||
