@@ -38,6 +38,9 @@ public class Announcement {
     @Indexed
     private String createdByUserId;
 
+    @Builder.Default
+    private boolean deleted = false;
+
     @CreatedDate
     private Instant createdAt;
 
