@@ -46,6 +46,8 @@ public class Internship {
 
     private List<LocalizedText> requiredSkills;
 
+    private List<String> applicationRequirements;
+
     @Builder.Default
     private boolean deleted = false;
 

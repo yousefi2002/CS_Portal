@@ -65,6 +65,7 @@ public class InternshipServiceImpl implements InternshipService {
                 .roadmap(request.getRoadmap())
                 .duration(request.getDuration())
                 .requiredSkills(request.getRequiredSkills())
+                .applicationRequirements(request.getApplicationRequirements())
                 .build();
 
         Internship saved = internshipRepository.save(internship);
@@ -90,6 +91,7 @@ public class InternshipServiceImpl implements InternshipService {
         internship.setRoadmap(request.getRoadmap());
         internship.setDuration(request.getDuration());
         internship.setRequiredSkills(request.getRequiredSkills());
+        internship.setApplicationRequirements(request.getApplicationRequirements());
 
         return toResponse(internshipRepository.save(internship));
     }
@@ -262,6 +264,7 @@ public class InternshipServiceImpl implements InternshipService {
                 .duration(internship.getDuration())
                 .vacancies(internship.getVacancies())
                 .requiredSkills(internship.getRequiredSkills())
+                .applicationRequirements(internship.getApplicationRequirements())
                 .deleted(internship.isDeleted())
                 .createdAt(internship.getCreatedAt())
                 .updatedAt(internship.getUpdatedAt())

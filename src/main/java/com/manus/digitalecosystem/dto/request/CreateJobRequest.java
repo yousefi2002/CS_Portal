@@ -23,5 +23,7 @@ public class CreateJobRequest {
     private LocalizedText location;
 
     private List<LocalizedText> requiredSkills;
+
+    private List<String> applicationRequirements;
 }
 

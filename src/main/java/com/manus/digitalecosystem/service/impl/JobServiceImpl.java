@@ -64,6 +64,7 @@ public class JobServiceImpl implements JobService {
             .requirement(request.getRequirements() == null ? null : List.of(request.getRequirements()))
                 .location(request.getLocation())
                 .requiredSkills(request.getRequiredSkills())
+                .applicationRequirements(request.getApplicationRequirements())
                 .build();
 
         Job saved = jobRepository.save(job);
@@ -88,6 +89,7 @@ public class JobServiceImpl implements JobService {
         job.setRequirement(request.getRequirements() == null ? null : List.of(request.getRequirements()));
         job.setLocation(request.getLocation());
         job.setRequiredSkills(request.getRequiredSkills());
+        job.setApplicationRequirements(request.getApplicationRequirements());
 
         return toResponse(jobRepository.save(job));
     }
@@ -261,6 +263,7 @@ public class JobServiceImpl implements JobService {
                 .requirement(job.getRequirement())
                 .location(job.getLocation())
                 .requiredSkills(job.getRequiredSkills())
+                .applicationRequirements(job.getApplicationRequirements())
                 .deleted(job.isDeleted())
                 .createdAt(job.getCreatedAt())
                 .updatedAt(job.getUpdatedAt())

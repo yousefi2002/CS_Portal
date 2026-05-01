@@ -25,5 +25,7 @@ public class CreateInternshipRequest {
     private LocalizedText duration;
 
     private List<LocalizedText> requiredSkills;
+
+    private List<String> applicationRequirements;
 }
 

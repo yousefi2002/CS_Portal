@@ -3,6 +3,7 @@ package com.manus.digitalecosystem.service.impl;
 import com.manus.digitalecosystem.dto.request.CreateApplicationRequest;
 import com.manus.digitalecosystem.dto.request.DeleteApplicationRequest;
 import com.manus.digitalecosystem.dto.request.UpdateApplicationRequest;
+import com.manus.digitalecosystem.dto.response.ApplyRequirementsResponse;
 import com.manus.digitalecosystem.dto.response.ApplicationResponse;
 import com.manus.digitalecosystem.exception.BadRequestException;
 import com.manus.digitalecosystem.exception.DuplicateResourceException;
@@ -38,6 +39,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class ApplicationServiceImpl implements ApplicationService {
@@ -75,6 +77,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         Student student = findCurrentStudent(request.getStudentId());
         OpportunityContext opportunity = resolveOpportunity(request.getOpportunityType(), request.getOpportunityId());
+        validateSubmissionAgainstRequirements(request, opportunity.requirements());
 
         if (applicationRepository.existsByStudentIdAndOpportunityTypeAndOpportunityId(student.getId(), request.getOpportunityType(), request.getOpportunityId())) {
             throw new DuplicateResourceException("error.application.duplicate");
@@ -185,6 +188,19 @@ public class ApplicationServiceImpl implements ApplicationService {
         return searchBase(null, query);
     }
 
+    @Override
+    public ApplyRequirementsResponse getApplyRequirements(String opportunityType, String opportunityId) {
+        OpportunityType type = parseOpportunityType(opportunityType);
+        OpportunityContext opportunity = resolveOpportunity(type, opportunityId);
+        return ApplyRequirementsResponse.builder()
+                .opportunityType(type)
+                .opportunityId(opportunityId)
+                .companyId(opportunity.companyId())
+                .requirements(opportunity.requirements())
+                .directApply(opportunity.requirements().isEmpty())
+                .build();
+    }
+
     private List<ApplicationResponse> searchBase(String companyId, String query) {
         Query mongoQuery = new Query();
         mongoQuery.addCriteria(Criteria.where("deleted").is(false));
@@ -247,7 +263,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             if (job.isDeleted()) {
                 throw new ResourceNotFoundException("error.job.not_found", opportunityId);
             }
-            return new OpportunityContext(job.getCompanyId(), job.getJobTitle());
+            return new OpportunityContext(job.getCompanyId(), job.getJobTitle(), safeList(job.getApplicationRequirements()));
         }
 
         if (type == OpportunityType.INTERNSHIP) {
@@ -256,10 +272,61 @@ public class ApplicationServiceImpl implements ApplicationService {
             if (internship.isDeleted()) {
                 throw new ResourceNotFoundException("error.internship.not_found", opportunityId);
             }
-            return new OpportunityContext(internship.getCompanyId(), internship.getInternshipTitle());
+            return new OpportunityContext(internship.getCompanyId(), internship.getInternshipTitle(), safeList(internship.getApplicationRequirements()));
         }
 
         throw new BadRequestException("error.application.opportunity_type.invalid");
+    }
+
+    private void validateSubmissionAgainstRequirements(CreateApplicationRequest request, List<String> requirements) {
+        if (requirements.isEmpty()) {
+            return;
+        }
+
+        List<String> missing = new ArrayList<>();
+        for (String requirement : requirements) {
+            String normalized = normalizeRequirement(requirement);
+            switch (normalized) {
+                case "RESUME", "CV", "CURRICULUM_VITAE" -> {
+                    if (!StringUtils.hasText(request.getResumeFileId())) {
+                        missing.add("resumeFileId");
+                    }
+                }
+                case "COVER_LETTER", "COVERLETTER", "LETTER" -> {
+                    if (request.getCoverLetter() == null && request.getNote() == null) {
+                        missing.add("coverLetter");
+                    }
+                }
+                case "PORTFOLIO", "PORTFOLIO_LINK" -> {
+                    if (!StringUtils.hasText(request.getPortfolioLink())) {
+                        missing.add("portfolioLink");
+                    }
+                }
+                default -> {
+                    // Unknown requirement types are ignored so the backend stays forward-compatible.
+                }
+            }
+        }
+
+        if (!missing.isEmpty()) {
+            throw new BadRequestException("error.application.requirements.missing", String.join(",", missing));
+        }
+    }
+
+    private String normalizeRequirement(String value) {
+        return value == null ? "" : value.trim().toUpperCase(Locale.ROOT).replace(' ', '_').replace('-', '_');
+    }
+
+    private List<String> safeList(List<String> values) {
+        return values == null ? List.of() : values;
+    }
+
+    private OpportunityType parseOpportunityType(String opportunityType) {
+        try {
+            return OpportunityType.valueOf(opportunityType.trim().toUpperCase(Locale.ROOT));
+        } catch (Exception ex) {
+            throw new BadRequestException("error.application.opportunity_type.invalid");
+        }
     }
 
     private void ensureCanManageApplication(Application application) {
@@ -358,6 +425,6 @@ public class ApplicationServiceImpl implements ApplicationService {
                 .build();
     }
 
-    private record OpportunityContext(String companyId, Object title) {
+    private record OpportunityContext(String companyId, Object title, List<String> requirements) {
     }
 }

@@ -22,6 +22,7 @@ public class InternshipResponse {
     private LocalizedText duration;
     private int vacancies;
     private List<LocalizedText> requiredSkills;
+    private List<String> applicationRequirements;
     private boolean deleted;
     private Instant createdAt;
     private Instant updatedAt;

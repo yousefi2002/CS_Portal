@@ -3,6 +3,7 @@ package com.manus.digitalecosystem.controller;
 import com.manus.digitalecosystem.dto.request.CreateApplicationRequest;
 import com.manus.digitalecosystem.dto.request.DeleteApplicationRequest;
 import com.manus.digitalecosystem.dto.request.UpdateApplicationRequest;
+import com.manus.digitalecosystem.dto.response.ApplyRequirementsResponse;
 import com.manus.digitalecosystem.dto.response.ApplicationResponse;
 import com.manus.digitalecosystem.dto.response.Response;
 import com.manus.digitalecosystem.service.ApplicationService;
@@ -97,5 +98,12 @@ public class ApplicationController {
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<Response<List<ApplicationResponse>>> searchApplicationsGlobal(@RequestParam(required = false) String q) {
         return apiResponseFactory.success(HttpStatus.OK, "success.application.search", applicationService.searchApplicationsGlobal(q));
+    }
+
+    @GetMapping("/requirements")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Response<ApplyRequirementsResponse>> getApplyRequirements(@RequestParam String opportunityType,
+                                                                                   @RequestParam String opportunityId) {
+        return apiResponseFactory.success(HttpStatus.OK, "success.application.requirements", applicationService.getApplyRequirements(opportunityType, opportunityId));
     }
 }

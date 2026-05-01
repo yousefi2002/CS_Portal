@@ -24,6 +24,7 @@ public class JobResponse {
     private List<LocalizedText> requirement;
     private LocalizedText location;
     private List<LocalizedText> requiredSkills;
+    private List<String> applicationRequirements;
     private boolean deleted;
     private Instant createdAt;
     private Instant updatedAt;

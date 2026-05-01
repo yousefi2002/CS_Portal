@@ -19,5 +19,7 @@ public class UpdateJobRequest {
     private LocalizedText location;
 
     private List<LocalizedText> requiredSkills;
+
+    private List<String> applicationRequirements;
 }
 

@@ -49,6 +49,8 @@ public class Job {
 
     private List<LocalizedText> requiredSkills;
 
+    private List<String> applicationRequirements;
+
     @Builder.Default
     private boolean deleted = false;
 
