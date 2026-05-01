@@ -131,6 +131,42 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
+    public List<DepartmentResponse> getDepartmentsByUniversity(String universityId) {
+        University university = findUniversityById(universityId);
+
+        if (SecurityUtils.hasRole(Role.SUPER_ADMIN.name())) {
+            return departmentRepository.findByUniversityId(universityId, Pageable.unpaged()).stream()
+                    .sorted(Comparator.comparing(Department::getCreatedAt, Comparator.nullsLast(Comparator.reverseOrder())))
+                    .map(this::toResponse)
+                    .toList();
+        }
+
+        if (SecurityUtils.hasRole(Role.UNIVERSITY_ADMIN.name())) {
+            if (!SecurityUtils.getCurrentUserId().equals(university.getAdminUserId())) {
+                throw new ResourceNotFoundException("error.university.not_found", universityId);
+            }
+
+            return departmentRepository.findByUniversityIdAndDeletedFalse(universityId, Pageable.unpaged()).stream()
+                    .sorted(Comparator.comparing(Department::getCreatedAt, Comparator.nullsLast(Comparator.reverseOrder())))
+                    .map(this::toResponse)
+                    .toList();
+        }
+
+        if (SecurityUtils.hasRole(Role.DEPARTMENT_ADMIN.name())) {
+            return departmentRepository.findByAdminUserId(SecurityUtils.getCurrentUserId())
+                    .filter(department -> universityId.equals(department.getUniversityId()))
+                    .map(List::of)
+                    .orElseGet(List::of)
+                    .stream()
+                    .filter(department -> !department.isDeleted())
+                    .map(this::toResponse)
+                    .toList();
+        }
+
+        throw new UnauthorizedException("error.department.forbidden");
+    }
+
+    @Override
     public DepartmentResponse getDepartmentById(String departmentId) {
         Department department = findDepartmentById(departmentId, true);
         ensureCanViewDepartment(department);

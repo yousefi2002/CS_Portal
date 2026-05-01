@@ -21,6 +21,8 @@ public interface DepartmentService {
 
     List<DepartmentResponse> getAllDepartments();
 
+    List<DepartmentResponse> getDepartmentsByUniversity(String universityId);
+
     DepartmentResponse getDepartmentById(String departmentId);
 
     void deleteDepartment(String departmentId);

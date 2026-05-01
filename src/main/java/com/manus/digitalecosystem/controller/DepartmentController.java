@@ -82,6 +82,13 @@ public class DepartmentController {
         return apiResponseFactory.success(HttpStatus.OK, "success.department.list", departmentService.getAllDepartments());
     }
 
+    @GetMapping("/university/{universityId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Response<List<DepartmentResponse>>> getDepartmentsByUniversity(@PathVariable String universityId) {
+        return apiResponseFactory.success(HttpStatus.OK, "success.department.list",
+                departmentService.getDepartmentsByUniversity(universityId));
+    }
+
     @GetMapping("/{departmentId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Response<DepartmentResponse>> getDepartment(@PathVariable String departmentId) {
