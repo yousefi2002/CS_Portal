@@ -110,6 +110,14 @@ public class UniversityController {
                 universityService.getUniversityById(universityId));
     }
 
+    @GetMapping("/{universityId}/top-students")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Response<java.util.List<com.manus.digitalecosystem.dto.response.TopStudentResponse>>> getTopStudents(@PathVariable String universityId,
+                                                                                                                                    @RequestParam(defaultValue = "10") int limit) {
+        return apiResponseFactory.success(HttpStatus.OK, "success.university.top_students",
+                universityService.getTopStudents(universityId, limit));
+    }
+
     @DeleteMapping("/{universityId}")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<Response<Object>> deleteUniversity(@PathVariable String universityId) {

@@ -27,4 +27,6 @@ public interface UniversityService {
                                                 String rank,
                                                 int page,
                                                 int size);
+
+    java.util.List<com.manus.digitalecosystem.dto.response.TopStudentResponse> getTopStudents(String universityId, int limit);
 }

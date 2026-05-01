@@ -48,15 +48,21 @@ public class UniversityServiceImpl implements UniversityService {
 
     private final UniversityRepository universityRepository;
     private final MongoTemplate mongoTemplate;
+    private final com.manus.digitalecosystem.repository.StudentRepository studentRepository;
+    private final com.manus.digitalecosystem.repository.AchievementRepository achievementRepository;
     private final Path uploadBasePath;
     private final String uploadBaseUrl;
 
     public UniversityServiceImpl(UniversityRepository universityRepository,
                                  MongoTemplate mongoTemplate,
+                                 com.manus.digitalecosystem.repository.StudentRepository studentRepository,
+                                 com.manus.digitalecosystem.repository.AchievementRepository achievementRepository,
                                  @Value("${app.upload.base-path:uploads}") String uploadBasePath,
                                  @Value("${app.upload.base-url:http://localhost:8080}") String uploadBaseUrl) {
         this.universityRepository = universityRepository;
         this.mongoTemplate = mongoTemplate;
+        this.studentRepository = studentRepository;
+        this.achievementRepository = achievementRepository;
         this.uploadBasePath = Path.of(uploadBasePath).toAbsolutePath().normalize();
         this.uploadBaseUrl = uploadBaseUrl != null ? uploadBaseUrl.replaceAll("/+$", "") : "http://localhost:8080";
     }
@@ -192,6 +198,34 @@ public class UniversityServiceImpl implements UniversityService {
         return new PageImpl<>(pageContent, PageRequest.of(safePage, safeSize), universities.size());
     }
 
+    @Override
+    public java.util.List<com.manus.digitalecosystem.dto.response.TopStudentResponse> getTopStudents(String universityId, int limit) {
+        var university = findUniversityById(universityId);
+        ensureCanViewUniversity(university);
+
+        // collect students in university
+        var students = studentRepository.findByUniversityId(universityId);
+
+        // compute achievement counts per student using achievementRepository count
+        var counts = new java.util.ArrayList<com.manus.digitalecosystem.dto.response.TopStudentResponse>();
+        for (var student : students) {
+            long cnt = achievementRepository.countByContributorsStudentIdAndDeletedFalse(student.getId());
+            if (cnt <= 0) continue;
+            counts.add(com.manus.digitalecosystem.dto.response.TopStudentResponse.builder()
+                    .studentId(student.getId())
+                    .fullName(student.getFullName())
+                    .email(student.getEmail())
+                    .imageFileId(student.getImageFileId())
+                    .achievementCount(cnt)
+                    .build());
+        }
+
+        return counts.stream()
+                .sorted(java.util.Comparator.comparingLong(com.manus.digitalecosystem.dto.response.TopStudentResponse::getAchievementCount).reversed())
+                .limit(Math.max(1, limit))
+                .toList();
+    }
+
     private University findUniversityById(String universityId) {
         return universityRepository.findById(universityId)
                 .orElseThrow(() -> new ResourceNotFoundException("error.university.not_found", universityId));
@@ -208,6 +242,20 @@ public class UniversityServiceImpl implements UniversityService {
         }
 
         throw new UnauthorizedException("error.university.forbidden");
+    }
+
+    private void ensureCanViewUniversity(University university) {
+        if (SecurityUtils.hasRole(Role.SUPER_ADMIN.name())) {
+            return;
+        }
+
+        if (SecurityUtils.hasRole(Role.UNIVERSITY_ADMIN.name()) && SecurityUtils.getCurrentUserId().equals(university.getAdminUserId())) {
+            return;
+        }
+
+        if (SecurityUtils.hasRole(Role.UNIVERSITY_ADMIN.name())) {
+            throw new ResourceNotFoundException("error.university.not_found", university.getId());
+        }
     }
 
     private int score(com.manus.digitalecosystem.model.LocalizedText text, String search) {
