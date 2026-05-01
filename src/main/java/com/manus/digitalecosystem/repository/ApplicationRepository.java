@@ -13,11 +13,26 @@ public interface ApplicationRepository extends MongoRepository<Application, Stri
 
     Page<Application> findByStudentId(String studentId, Pageable pageable);
 
+    Page<Application> findByStudentIdAndDeletedFalse(String studentId, Pageable pageable);
+
     Page<Application> findByCompanyId(String companyId, Pageable pageable);
+
+    Page<Application> findByCompanyIdAndDeletedFalse(String companyId, Pageable pageable);
+
+    Page<Application> findByDeletedFalse(Pageable pageable);
 
     Page<Application> findByCompanyIdAndOpportunityType(String companyId, OpportunityType opportunityType, Pageable pageable);
 
+    Page<Application> findByCompanyIdAndOpportunityTypeAndDeletedFalse(String companyId, OpportunityType opportunityType, Pageable pageable);
+
     Page<Application> findByCompanyIdAndOpportunityTypeAndOpportunityId(
+            String companyId,
+            OpportunityType opportunityType,
+            String opportunityId,
+            Pageable pageable
+    );
+
+    Page<Application> findByCompanyIdAndOpportunityTypeAndOpportunityIdAndDeletedFalse(
             String companyId,
             OpportunityType opportunityType,
             String opportunityId,
