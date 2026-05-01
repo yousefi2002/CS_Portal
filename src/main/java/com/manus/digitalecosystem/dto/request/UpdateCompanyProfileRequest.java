@@ -24,6 +24,6 @@ public class UpdateCompanyProfileRequest {
     @Email(message = "{validation.email.invalid}")
     private String email;
 
-    private String imageFileId;
+    private String adminUserId;
 }
 

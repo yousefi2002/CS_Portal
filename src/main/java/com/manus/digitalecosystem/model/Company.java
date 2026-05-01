@@ -12,6 +12,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -37,7 +39,8 @@ public class Company {
 
     private String email;
 
-    private String imageFileId;
+    @Builder.Default
+    private List<String> imageFileIds = new ArrayList<>();
 
     @Indexed
     private String adminUserId;

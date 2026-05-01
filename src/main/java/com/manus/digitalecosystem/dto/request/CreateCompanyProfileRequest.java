@@ -3,6 +3,7 @@ package com.manus.digitalecosystem.dto.request;
 import com.manus.digitalecosystem.model.LocalizedText;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
@@ -24,6 +25,7 @@ public class CreateCompanyProfileRequest {
     @Email(message = "{validation.email.invalid}")
     private String email;
 
-    private String imageFileId;
+    @NotBlank(message = "{validation.company.admin_user_id.required}")
+    private String adminUserId;
 }
 
