@@ -28,7 +28,7 @@ public class Department {
 
     private LocalizedText name;
 
-    private LocalizedText description;
+    private LocalizedText description;  
 
     @Builder.Default
     private List<String> imageFileIds = new ArrayList<>();

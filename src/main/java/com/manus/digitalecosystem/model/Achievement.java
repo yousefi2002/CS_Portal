@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -38,9 +39,14 @@ public class Achievement {
     private LocalizedText description;
 
     private String link;
-    private String imageFileId;
+
+    @Builder.Default
+    private List<String> imageUrls = new ArrayList<>();
 
     private List<AchievementContributor> contributors;
+
+    @Builder.Default
+    private boolean deleted = false;
 
     @CreatedDate
     private Instant createdAt;

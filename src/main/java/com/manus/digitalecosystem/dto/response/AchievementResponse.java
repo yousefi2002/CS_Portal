@@ -1,32 +1,27 @@
-package com.manus.digitalecosystem.dto.request;
+package com.manus.digitalecosystem.dto.response;
 
 import com.manus.digitalecosystem.model.AchievementContributor;
 import com.manus.digitalecosystem.model.LocalizedText;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 
+import java.time.Instant;
 import java.util.List;
 
 @Data
-public class CreateAchievementRequest {
-
+@Builder
+public class AchievementResponse {
+    private String id;
     private String universityId;
-
     private String departmentId;
-
     private String companyId;
-
-    @NotNull(message = "{validation.achievement.title.required}")
-    private LocalizedText title;
-
-    private LocalizedText description;
-
-    private String link;
-
-    private List<AchievementContributor> contributors;
-
-    @NotBlank(message = "{validation.achievement.type.required}")
     private String type;
+    private LocalizedText title;
+    private LocalizedText description;
+    private String link;
+    private List<String> imageUrls;
+    private List<AchievementContributor> contributors;
+    private boolean deleted;
+    private Instant createdAt;
+    private Instant updatedAt;
 }
-
