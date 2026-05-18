@@ -115,10 +115,24 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public List<CompanyResponse> getAllCompanies() {
         ensureSuperAdmin();
+        return getAllCompaniesForHome();
+    }
+
+    @Override
+    public List<CompanyResponse> getAllCompaniesForHome() {
         return companyRepository.findAll().stream()
                 .sorted(Comparator.comparing(Company::getCreatedAt, Comparator.nullsLast(Comparator.reverseOrder())))
                 .map(this::toResponse)
                 .toList();
+    }
+
+    @Override
+    public org.springframework.data.domain.Page<CompanyResponse> getAllCompaniesForHome(int page, int size) {
+        int safePage = Math.max(page, 0);
+        int safeSize = Math.min(Math.max(size, 1), 100);
+        org.springframework.data.domain.PageRequest pageRequest = org.springframework.data.domain.PageRequest.of(safePage, safeSize, org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "createdAt"));
+
+        return companyRepository.findAll(pageRequest).map(this::toResponse);
     }
 
     @Override

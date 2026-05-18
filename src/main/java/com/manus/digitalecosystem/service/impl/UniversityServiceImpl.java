@@ -132,6 +132,13 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     @Override
+    public java.util.List<UniversityResponse> getAllUniversities() {
+        return universityRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt")).stream()
+                .map(UniversityMapper::toResponse)
+                .toList();
+    }
+
+    @Override
     public Page<UniversityResponse> getAllUniversities(int page, int size) {
         int safePage = Math.max(page, 0);
         int safeSize = Math.min(Math.max(size, 1), 100);

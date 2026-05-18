@@ -17,6 +17,10 @@ public interface CompanyService {
 
     List<CompanyResponse> getAllCompanies();
 
+    List<CompanyResponse> getAllCompaniesForHome();
+
+    org.springframework.data.domain.Page<CompanyResponse> getAllCompaniesForHome(int page, int size);
+
     CompanyResponse getCompanyById(String companyId);
 
     void deleteCompany(String companyId);

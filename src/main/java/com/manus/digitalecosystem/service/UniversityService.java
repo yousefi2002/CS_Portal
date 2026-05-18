@@ -16,6 +16,8 @@ public interface UniversityService {
 
     UniversityResponse updateUniversityImages(String universityId, List<MultipartFile> images);
 
+    java.util.List<UniversityResponse> getAllUniversities();
+
     Page<UniversityResponse> getAllUniversities(int page, int size);
 
     UniversityResponse getUniversityById(String universityId);
